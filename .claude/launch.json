@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "baseline",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-l", "8080", "baseline_approach"],
+      "port": 8080
+    }
+  ]
+}
