@@ -29,6 +29,7 @@ ADS_TEB1113_SwiftQueue/
 ├── optimized/                  # Supporting Python terminal demos
 │   ├── linked_queue.py         #   Node + LinkedQueue implementation
 │   └── demo.py                 #   terminal walkthrough: join, refresh, position restored
+│   └── benchmark.py                 #   terminal walkthrough: join, refresh, position restored
 └── docs/
     ├── PROBLEM_STATEMENT.md
     └── DESIGN_BASELINE_VS_OPTIMIZED.md
@@ -42,10 +43,10 @@ The simulation is fully self-contained in JavaScript inside the HTML file.
 
 ## Optimised flow
 
-1. Landing Page — click Enter Virtual Waiting Room
-2. Queue Page — add users to the linked queue, simulate a page refresh
-3. Interruption Screen — watch find_position() restore your position automatically, then countdown to seat selection
-4. Seat Selection — choose a section and proceed to checkout
+1. Landing Page - click Enter Virtual Waiting Room
+2. Queue Page - add users to the linked queue, simulate a page refresh
+3. Interruption Screen - watch find_position() restore your position automatically, then countdown to seat selection
+4. Seat Selection - choose a section and proceed to checkout
 
 ## Design system
 
