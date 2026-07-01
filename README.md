@@ -4,8 +4,6 @@
 
 Group project: SwiftQueue. This repo compares a naive ("baseline") virtual-queue design against a data-structure-driven ("optimized") redesign, using a Ticketmaster-styled interactive HTML dashboard with a live queue simulation.
 
-## My scope (Eavan Tan)
-
 **Optimized approach:** Linked Queue implemented in JavaScript inside `optimised.html`, with a live simulation showing enqueue, position assignment, refresh, and seat selection across 4 interactive screens.
 
 Two approaches are compared, both built around a **single data structure choice**:
