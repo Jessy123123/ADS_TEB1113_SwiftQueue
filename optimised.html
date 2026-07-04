@@ -566,7 +566,6 @@
       const sections = document.querySelectorAll('.seat-section');
       for (let i = 0; i < sections.length; i++) {
         const s = sections[i];
-        // find whether they are matching
         s.classList.remove('selected');
       }
       el.classList.add('selected');
@@ -603,7 +602,7 @@
         document.getElementById('timer').textContent = m + ':' + s;
       }, 1000);
     }
-    
+
   </script>
   </body>
 </html>
