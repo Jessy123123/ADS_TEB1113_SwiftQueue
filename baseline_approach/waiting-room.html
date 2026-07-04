@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Waiting Room | Ticketmaster</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Sora:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "inverse-on-surface": "#edf0ff",
+                "surface-bright": "#f9f9ff",
+                "secondary": "#5444d3",
+                "surface": "#f9f9ff",
+                "on-secondary-fixed-variant": "#3e29bd",
+                "inverse-primary": "#b5c4ff",
+                "tertiary": "#852b00",
+                "on-surface-variant": "#434654",
+                "background": "#f9f9ff",
+                "on-secondary-container": "#fffbff",
+                "surface-container": "#e9edff",
+                "error-container": "#ffdad6",
+                "on-primary": "#ffffff",
+                "on-tertiary-container": "#ffd4c5",
+                "primary-fixed-dim": "#b5c4ff",
+                "secondary-container": "#6d5fed",
+                "on-primary-fixed-variant": "#003dab",
+                "inverse-surface": "#293040",
+                "on-background": "#141b2b",
+                "on-secondary": "#ffffff",
+                "outline": "#737686",
+                "on-tertiary-fixed-variant": "#802a00",
+                "error": "#ba1a1a",
+                "on-tertiary-fixed": "#380d00",
+                "on-error-container": "#93000a",
+                "secondary-fixed-dim": "#c5c0ff",
+                "tertiary-fixed": "#ffdbcf",
+                "primary": "#003fb1",
+                "surface-container-highest": "#dce2f7",
+                "tertiary-fixed-dim": "#ffb59a",
+                "on-error": "#ffffff",
+                "outline-variant": "#c3c5d7",
+                "on-surface": "#141b2b",
+                "on-secondary-fixed": "#150067",
+                "on-primary-container": "#d4dcff",
+                "surface-container-low": "#f1f3ff",
+                "secondary-fixed": "#e4dfff",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-high": "#e1e8fd",
+                "surface-dim": "#d3daef",
+                "on-tertiary": "#ffffff",
+                "tertiary-container": "#ad3b00",
+                "primary-fixed": "#dbe1ff",
+                "on-primary-fixed": "#00174d",
+                "surface-tint": "#1353d8",
+                "primary-container": "#1a56db",
+                "surface-variant": "#dce2f7"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "stack-sm": "8px",
+                "unit": "4px",
+                "stack-md": "16px",
+                "gutter": "24px",
+                "margin-desktop": "48px",
+                "stack-lg": "32px",
+                "container-max": "1280px",
+                "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                "title-lg": ["Sora"],
+                "body-md": ["Inter"],
+                "label-md": ["Inter"],
+                "caption": ["Inter"],
+                "display-lg": ["Sora"],
+                "headline-md": ["Sora"],
+                "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                "title-lg": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                "caption": ["12px", {"lineHeight": "1", "fontWeight": "400"}],
+                "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #FAFAF8;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom Shimmer Effect */
+        .shimmer-bar {
+            background: linear-gradient(90deg, #A78BFA 0%, #1A56DB 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-bar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        /* Pulsing Dot */
+        .pulse-dot {
+            position: relative;
+        }
+        .pulse-dot::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background-color: #10B981;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: translate(-50%, -50%) scale(0.33); opacity: 0.8; }
+            80%, 100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+        }
+        .queue-number {
+            font-size: 96px;
+            line-height: 1;
+            font-family: 'Sora', sans-serif;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md text-on-surface" data-page="waiting-room">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full bg-surface/90 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm z-50 h-20">
+<div class="max-w-container-max mx-auto px-margin-desktop h-full flex items-center justify-between">
+<div class="flex items-center gap-gutter">
+<a class="font-display-lg text-display-lg tracking-tighter text-primary" href="event-detail.html">ticketmaster</a>
+<nav class="hidden md:flex gap-stack-lg items-center mt-1">
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1" href="event-detail.html">Concerts</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Sports</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Arts &amp; Theater</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Family</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined">search</span>
+</button>
+<div class="flex items-center gap-2 group cursor-pointer text-on-surface-variant hover:text-primary transition-all active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-md text-label-md">Sign In</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content: Waiting Room Canvas -->
+<main class="flex-grow flex items-center justify-center px-margin-mobile md:px-0 pt-20">
+<div class="w-full max-w-[600px] bg-surface-container-lowest rounded-xl shadow-[0px_8px_24px_rgba(0,0,0,0.04)] p-stack-lg md:p-12 text-center animate-in fade-in zoom-in duration-700">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-lg">
+                Your place in the queue<br/>is being processed
+            </h2>
+<!-- Progress Bar -->
+<div class="w-full h-3 bg-surface-container rounded-full mb-stack-lg overflow-hidden">
+<div class="shimmer-bar h-full w-[85%] rounded-full shadow-[0_0_15px_rgba(124,111,253,0.3)]"></div>
+</div>
+<!-- Queue Indicator -->
+<div class="mb-stack-lg">
+<span class="queue-number text-primary block transition-all hover:scale-105 cursor-default">1</span>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-unit">
+                    Estimated wait: ~2 minutes
+                </p>
+</div>
+<!-- Live Status -->
+<div class="flex items-center justify-center gap-3 mb-stack-lg">
+<div class="w-2.5 h-2.5 bg-[#10B981] rounded-full pulse-dot"></div>
+<p class="font-caption text-caption text-on-surface-variant uppercase tracking-wider">
+                    Status last updated: <span id="current-time">14:14:18</span>
+</p>
+</div>
+<!-- Action -->
+<button id="queue-refresh-btn" class="font-label-md text-label-md text-primary hover:text-secondary transition-colors inline-flex items-center gap-1 group" type="button">
+                Refresh page to check status
+                <span class="material-symbols-outlined text-[18px] group-hover:rotate-180 transition-transform duration-500">refresh</span>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-stack-lg bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="max-w-container-max mx-auto px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-stack-md">
+<div class="flex flex-col items-center md:items-start gap-1">
+<span class="font-title-lg text-title-lg text-on-surface tracking-tight">ticketmaster</span>
+<p class="font-caption text-caption text-on-surface-variant">© 2024 Ticketmaster. All rights reserved. Premium Event Discovery.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-stack-md">
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms of Use</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Cookie Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Help Center</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Sell Tickets</a>
+</div>
+</div>
+</footer>
+<script>
+        // Update live status clock
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toTimeString().split(' ')[0];
+            document.getElementById('current-time').textContent = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Subtle parallax effect on the card
+        document.addEventListener('mousemove', (e) => {
+            const card = document.querySelector('main div');
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+    </script>
+<script src="baseline_approach.js"></script>
+</body></html>
