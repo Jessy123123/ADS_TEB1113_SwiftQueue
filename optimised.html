@@ -381,37 +381,39 @@
 
     class Node {
       constructor(sessionId, ticketNumber) {
-        this.sessionId    = sessionId;
-        this.ticketNumber = ticketNumber;
-        this.next         = null;
+        this.ticketNumber = ticketNumber; //value, the one for retrieval
+        this.sessionId    = sessionId; //value
+        this.next         = null; // pointer
       }
     }
 
     class LinkedQueue {
       constructor(startCount = 0) {
         this._front   = null;
-        this._tail    = null;
+        this._rear    = null;
         this._size    = startCount;
         this._counter = startCount;
       }
       enqueue(sessionId) {
         this._counter++;
         const node = new Node(sessionId, this._counter);
-        if (this._tail === null) {
+        if (this._rear === null) {
           this._front = node;
-          this._tail  = node;
+          this._rear  = node;
         } else {
-          this._tail.next = node;
-          this._tail      = node;
+          this._rear.next = node;
+          this._rear      = node;
         }
         this._size++;
         return node.ticketNumber;
       }
       getSize() { return this._size; }
-      findPosition(sessionId) {
+      findPosition(sessionId) { //keep looping to find the sessionId that matches 
+        // same concept as in the queue, just this is using linkedlist as the data type
         let pos = 1, current = this._front;
         while (current !== null) {
-          if (current.sessionId === sessionId) return pos;
+          if (current.sessionId === sessionId) 
+          return pos;
           current = current.next;
           pos++;
         }
@@ -419,32 +421,53 @@
       }
     }
 
+    // declaration and assign 
     const queue     = new LinkedQueue();
     const names     = ['Alice','Bob','Eavan','Sarah','James','Mia','Liam','Zara','Ryan','Nora'];
-    let nameIdx     = 0;
+    let nameIdx     = 0; //declare and assign
     let mySessionId = null;
     let myPosition  = null;
     let refreshDone = false;
 
+    //function that writes line on the screen
     function log(msg, type) {
+      //creare a new empty div if function is called
       const el = document.createElement('div');
       el.className = 'log-entry ' + (type || 'join');
       el.textContent = msg;
+      //create a simLog
       const box = document.getElementById('simLog');
+      // put the things just now inside here
       box.appendChild(el);
+      //auto scrolls the log box to the bottom, so the newest can be viewed
       box.scrollTop = box.scrollHeight;
     }
 
+    // runs every time when we add user to the queue
     function simJoin() {
-      if (nameIdx >= names.length) { log('Queue full for this demo.', 'info'); return; }
+      // current counter >= the number of elements in the array
+      if (nameIdx >= names.length) { 
+        log('Queue full for this demo.', 'info'); 
+        return; 
+      }
+
+      // get the current name from the counter value
       const name      = names[nameIdx++];
+      // put the name just now here 
       const sessionId = 'sess_' + name.toLowerCase();
+      // enqueue inside the queue
       const ticket    = queue.enqueue(sessionId);
+      // use the findposition to find back the user position
       const pos       = queue.findPosition(sessionId);
 
       if (mySessionId === null) {
+        // check if it is at the top
+        // assume you are the first one
         mySessionId = sessionId;
         myPosition  = pos;
+        // save the value into global variable
+        // #001
+        // just some formats
         document.getElementById('yourNumber').textContent  = '#' + String(ticket).padStart(3, '0');
         document.getElementById('queueId').textContent    = 'Queue ID: TM-OPT-' + sessionId.toUpperCase();
         document.getElementById('statusText').textContent = 'You are in the queue position locked by session';
@@ -453,12 +476,18 @@
         log(name + ' joined ticket #' + ticket + ', position ' + pos, 'join');
       }
 
+      // the progression bar
       const pct = Math.min(80, Math.round((pos / (pos + 6)) * 100));
+      // 6 is the fraction grows 
+      // cap it at the 80
+      // never full first
       document.getElementById('progressFill').style.width = pct + '%';
       document.getElementById('waitLabel').textContent = 'Estimated wait: ' + (pos * 2) + ' minutes';
+      // assume 2 minutes per person
 
       if (queue.getSize() >= 3) {
         document.getElementById('btnRefresh').disabled = false;
+        // set or reset it to false, so that can be clicked to true later
         document.getElementById('simNote').textContent = 'Click Simulate Page Refresh to see your position is preserved.';
       }
     }
@@ -467,14 +496,20 @@
       if (refreshDone) return;
       refreshDone = true;
       goTo(3);
+      // navigate to screen 3 
       revealPosition();
+      // call this function
     }
 
     function revealPosition() {
       const log3 = document.getElementById('s3Log');
+      // log box
       const numEl = document.getElementById('preservedNumber');
+      // the big number display
       const noteEl = document.getElementById('preservedNote');
+      // the note appears once the position is confirmed
 
+      // initial state
       numEl.textContent = '...';
       noteEl.style.display = 'none';
       log3.innerHTML = '';
@@ -489,12 +524,15 @@
         }, delay);
       }
 
+      // 200, 700, .... are the speed to be appeared
       addLog('Browser refresh triggered...', 'refresh', 200);
       addLog('Session identity detected: ' + mySessionId, 'info', 700);
       addLog('find_position("' + mySessionId + '") scanning linked list...', 'info', 1200);
       addLog('Scanning node 1... node 2... node 3...', 'info', 1800);
       setTimeout(() => {
+        // call the find position function now 
         const found = queue.findPosition(mySessionId);
+        // return the position integer
         myPosition = found;
         numEl.textContent = '#' + String(found).padStart(3, '0');
         noteEl.style.display = 'block';
@@ -505,6 +543,7 @@
     }
 
     function startCountdown() {
+      // the 3,2,1 before entering the last interface 
       const btn = document.getElementById('btnRefreshLarge');
       btn.disabled = true;
       let count = 3;
@@ -514,6 +553,7 @@
         if (count > 0) {
           btn.textContent = 'Entering in ' + count + '...';
         } else {
+          // meaning is already == 0, when navigate to window 4
           clearInterval(interval);
           btn.textContent = 'Loading...';
           setTimeout(() => goTo(4), 400);
@@ -522,8 +562,16 @@
     }
 
     function selectSection(el, name, priceEach, unitPrice) {
-      document.querySelectorAll('.seat-section').forEach(s => s.classList.remove('selected'));
+      // using loop to remove the one already selected
+      const sections = document.querySelectorAll('.seat-section');
+      for (let i = 0; i < sections.length; i++) {
+        const s = sections[i];
+        // find whether they are matching
+        s.classList.remove('selected');
+      }
       el.classList.add('selected');
+      // just for some displays
+
       const tickets  = unitPrice * 2;
       const service  = 45.00;
       const facility = 12.00;
@@ -534,8 +582,10 @@
     }
 
     function checkout() {
+      // toast notification 
       const t = document.getElementById('toast');
       t.style.display = 'block';
+      // change from block to none 
       setTimeout(() => { t.style.display = 'none'; }, 3000);
     }
 
@@ -543,13 +593,17 @@
     function startTimer() {
       if (timerInt) return;
       timerInt = setInterval(() => {
-        if (timerSec <= 0) { clearInterval(timerInt); return; }
+        if (timerSec <= 0) { 
+          clearInterval(timerInt); 
+          return; 
+        }
         timerSec--;
         const m = Math.floor(timerSec / 60);
         const s = String(timerSec % 60).padStart(2, '0');
         document.getElementById('timer').textContent = m + ':' + s;
       }, 1000);
     }
+    
   </script>
   </body>
 </html>
