@@ -1,0 +1,940 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter%3Awght%40100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      *, ::before, ::after {
+        box-sizing: border-box;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+      }
+
+      #stage {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        background: #ffffff;
+      }
+
+      /* â”€â”€ Button polish â”€â”€ */
+      [data-pencil-name="Enter Queue Button"],
+      [data-pencil-name="Refresh Button"],
+      [data-pencil-name="Checkout Button"] {
+        cursor: pointer;
+        transition: filter 0.15s ease !important;
+      }
+
+      [data-pencil-name="Enter Queue Button"]:hover,
+      [data-pencil-name="Refresh Button"]:hover,
+      [data-pencil-name="Checkout Button"]:hover {
+        filter: brightness(0.88);
+      }
+
+      [data-pencil-name="Back Link"] {
+        cursor: pointer;
+        text-decoration: underline;
+        transition: opacity 0.15s ease !important;
+      }
+
+      [data-pencil-name="Back Link"]:hover {
+        opacity: 0.6;
+      }
+
+      .queue-refresh-link {
+        font-family: Inter, system-ui, sans-serif;
+        font-size: 20px;
+        color: #0067F4;
+        cursor: pointer;
+        margin-top: 12px;
+        white-space: nowrap;
+        transition: opacity 0.15s ease;
+      }
+
+      .queue-refresh-link:hover {
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+    <div id="slides" style="height: 900px; position: absolute; left: 0; top: 0; width: 7520px; transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);">
+      <div
+        data-pencil-name="1 â€” Landing Page"
+        style="align-items: flex-start; background-color: #FFFFFF; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 900px; justify-content: flex-start; left: 0px; overflow: hidden; position: absolute; top: 0px; width: 1440px"
+      >
+        <div
+          data-pencil-name="Nav Bar"
+          style="align-items: center; background-color: #FFFFFF; border-color: #E5E7EB; border-style: solid; border-width: 0px 0px 1px 0px; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 0px; height: 96px; justify-content: space-between; padding: 0px 40px; width: 100%"
+        >
+          <div
+            data-pencil-name="Nav Left"
+            style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 32px; height: fit-content; justify-content: flex-start; width: fit-content"
+          >
+            <div
+              data-pencil-name="Logo"
+              style="box-sizing: border-box; color: #0067F4; font-family: Inter, system-ui, sans-serif; font-size: 44px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              ticketmaster
+            </div>
+            <div
+              data-pencil-name="Nav Links"
+              style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 24px; height: fit-content; justify-content: flex-start; width: fit-content"
+            >
+              <div
+                data-pencil-name="Concerts"
+                style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 28px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                Concerts
+              </div>
+              <div
+                data-pencil-name="Sports"
+                style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 28px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                Sports
+              </div>
+              <div
+                data-pencil-name="Arts &amp; Theater"
+                style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 28px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                Arts &amp; Theater
+              </div>
+              <div
+                data-pencil-name="Family"
+                style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 28px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                Family
+              </div>
+            </div>
+          </div>
+          <div
+            data-pencil-name="Nav Right"
+            style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 20px; height: fit-content; justify-content: flex-start; width: fit-content"
+          >
+            <svg
+              data-pencil-name="Search Icon"
+              data-icon-name="search"
+              data-icon-set="lucide"
+              viewBox="0 0 13.99993896484375 14"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              style="box-sizing: border-box; flex-shrink: 0; height: 20px; width: 20px"
+            >
+              <path
+                d="M6.00537 1.17578q-0.04102 0.01367-0.23584 0.02734-0.57422 0.07178-1.16211 0.29053-0.58789 0.21533-1.09375 0.5503-0.39307 0.2666-0.74853 0.61181-0.35547 0.3418-0.62207 0.7041-0.646 0.92285-0.86817 2.03028-0.05811 0.28027-0.07861 0.46142-0.02051 0.18115-0.02051 0.57422 0 0.43408 0.02734 0.68018 0.02734 0.24268 0.12647 0.59472 0.19482 0.75537 0.60156 1.43555 0.40674 0.67676 0.96729 1.18262 0.40674 0.3623 0.81689 0.60156 0.41357 0.23926 0.91944 0.43408 1.06299 0.39307 2.21826 0.29395 1.15527-0.09912 2.1499-0.65967 0.12646-0.06836 0.33496-0.2085 0.2085-0.14014 0.29395-0.21191l0.05468-0.05469 1.10743 1.10742q1.12109 1.104 1.20312 1.15528 0.08545 0.04785 0.23926 0.04785 0.15381 0 0.23584-0.03418 0.08545-0.0376 0.18115-0.1333 0.09912-0.09912 0.1333-0.18115 0.0376-0.08545 0.0376-0.23926 0-0.15381-0.05127-0.23584-0.04785-0.08545-1.15186-1.20654l-1.10742-1.10743 0.05469-0.06836q0.05811-0.05469 0.19824-0.25293 0.82373-1.23047 0.89209-2.70703 0.07178-1.47656-0.63916-2.76513-0.5332-0.96729-1.42187-1.64405-0.88867-0.68018-1.95508-0.9331-0.29395-0.06836-0.54004-0.09571-0.24268-0.03076-0.60498-0.04443-0.43408 0-0.49219 0z m0.7417 1.17578q0.37939 0.01367 0.79297 0.14014 0.41357 0.12646 0.78955 0.32129 0.7417 0.39307 1.28857 1.08008 0.54687 0.68359 0.75538 1.49707 0.07178 0.28027 0.09228 0.49902 0.02051 0.21533 0.02051 0.50928 0 0.70068-0.19483 1.30224-0.39307 1.16211-1.33984 1.91065-0.94336 0.74853-2.16016 0.875-0.19824 0.01367-0.49218 0.00683-0.29395-0.00684-0.48877-0.03418-0.5332-0.08545-1.03907-0.30761-0.50244-0.22559-0.93652-0.56055-0.14014-0.12646-0.35205-0.3418-0.2085-0.21875-0.33154-0.37256-0.57422-0.76904-0.7417-1.69531-0.08545-0.43408-0.06494-0.90918 0.02051-0.4751 0.11963-0.89551 0.29395-1.14844 1.18945-1.95849 0.89551-0.81348 2.05762-1.02539 0.18115-0.02734 0.42041-0.04102 0.23926-0.01367 0.34863-0.01367l0.2666 0.01367z"
+                fill="#6B7280"
+              ></path>
+            </svg>
+            <div
+              data-pencil-name="Sign In"
+              style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 28px; font-style: normal; font-weight: 500; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              Sign In
+            </div>
+          </div>
+        </div>
+        <div
+          data-pencil-name="Main Content"
+          style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: row; flex: 1 1 0; gap: 0px; justify-content: flex-start; width: 100%"
+        >
+          <div
+            data-pencil-name="Hero Image"
+            style="background-image: url('concert-crowd.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover; box-sizing: border-box; flex-shrink: 0; height: 100%; width: 720px"
+          ></div>
+          <div
+            data-pencil-name="Event Details Panel"
+            style="align-items: flex-start; background-color: #FFFFFF; box-sizing: border-box; display: flex; flex-direction: column; flex: 1 1 0; gap: 40px; height: 100%; justify-content: center; padding: 60px 56px"
+          >
+            <div
+              data-pencil-name="Category"
+              style="box-sizing: border-box; color: #0067F4; font-family: Inter, system-ui, sans-serif; font-size: 24px; font-style: normal; font-weight: 600; letter-spacing: 3px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              CONCERT
+            </div>
+            <div
+              data-pencil-name="Event Title"
+              style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 72px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: 83px; text-align: left; width: 100%"
+            >
+              Taylor Swift | The Eras Tour
+            </div>
+            <div
+              data-pencil-name="Date Venue"
+              style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: column; flex-shrink: 0; gap: 8px; height: fit-content; justify-content: flex-start; width: fit-content"
+            >
+              <div
+                data-pencil-name="Date"
+                style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 32px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                Sat, Jun 28 Â· 7:00 PM Â· MetLife Stadium
+              </div>
+              <div
+                data-pencil-name="Location"
+                style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 28px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                East Rutherford, NJ
+              </div>
+            </div>
+            <div
+              data-pencil-name="Divider"
+              style="background-color: #E5E7EB; box-sizing: border-box; flex-shrink: 0; height: 1px; width: 100%"
+            ></div>
+            <div
+              data-pencil-name="Price Info"
+              style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 8px; height: fit-content; justify-content: flex-start; width: fit-content"
+            >
+              <div
+                data-pencil-name="From"
+                style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 28px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                From
+              </div>
+              <div
+                data-pencil-name="Price"
+                style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 48px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                $49.50
+              </div>
+            </div>
+            <div
+              data-pencil-name="Enter Queue Button"
+              style="align-items: center; background-color: #0067F4; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 0px; height: fit-content; justify-content: center; padding: 20px 40px; width: 100%"
+            >
+              <div
+                data-pencil-name="CTA Label"
+                style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 32px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                Enter Virtual Waiting Room
+              </div>
+            </div>
+            <div
+              data-pencil-name="Fine Print"
+              style="box-sizing: border-box; color: #9CA3AF; font-family: Inter, system-ui, sans-serif; font-size: 24px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; width: 100%"
+            >
+              Tickets are allocated on a first-come, first-served basis.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        data-pencil-name="5 â€” Sold Out Modal"
+        style="background-color: #FFFFFF; box-sizing: border-box; height: 900px; left: 6080px; overflow: hidden; position: absolute; top: 0px; width: 1440px"
+      >
+        <div
+          data-pencil-name="Background Content"
+          style="align-items: flex-start; background-color: #F8F9FA; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; height: 900px; justify-content: flex-start; left: 0px; overflow: hidden; padding: 20px 40px; position: absolute; top: 0px; width: 1440px; z-index: 0"
+        >
+          <div
+            data-pencil-name="BG Nav"
+            style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 12px; height: fit-content; justify-content: flex-start; padding: 12px 0px; width: 100%"
+          >
+            <svg
+              data-pencil-name="BG Logo Icon"
+              data-icon-name="ticket"
+              data-icon-set="lucide"
+              viewBox="0 0 13.99993896484375 14"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              style="box-sizing: border-box; flex-shrink: 0; height: 36px; width: 36px"
+            >
+              <path
+                d="M2.15674 2.35156q-0.29395 0.02734-0.58789 0.16748-0.29395 0.14014-0.50586 0.3794-0.32129 0.32129-0.43408 0.79638-0.02734 0.11279-0.03418 0.2461-0.00684 0.1333-0.00684 0.68017l0 0.75537 0.04102 0.1128q0.05811 0.0957 0.14013 0.18115 0.08545 0.08203 0.17432 0.11963 0.09229 0.03418 0.3042 0.04785 0.24951 0.02734 0.41015 0.10596 0.16064 0.0752 0.33497 0.25293 0.17773 0.17432 0.25293 0.3623 0.07861 0.18799 0.07861 0.45459 0 0.2666-0.11279 0.50586-0.06836 0.14014-0.23926 0.30762-0.16748 0.16748-0.3418 0.24609-0.17432 0.0752-0.44092 0.10254-0.16748 0-0.25976 0.04443-0.08887 0.04102-0.16748 0.11963-0.0752 0.0752-0.1333 0.1709l-0.04102 0.1128 0 1.5415 0.04102 0.16748q0.07178 0.25293 0.18115 0.44092 0.11279 0.18799 0.29394 0.37256 0.18457 0.18115 0.37256 0.29394 0.18799 0.10938 0.44092 0.18115l0.16748 0.04102 9.83008 0 0.16748-0.04102q0.25293-0.07178 0.44092-0.18115 0.18799-0.11279 0.36914-0.29394 0.18457-0.18457 0.29394-0.37256 0.11279-0.18799 0.18457-0.44092l0.04102-0.16748 0-1.5415-0.04102-0.1128q-0.05811-0.0957-0.13672-0.1709-0.0752-0.07861-0.16748-0.11963-0.08887-0.04443-0.25634-0.04443-0.2666-0.02734-0.44092-0.10254-0.17432-0.07861-0.34522-0.24609-0.16748-0.16748-0.23584-0.30762-0.11279-0.23926-0.11279-0.50586 0-0.2666 0.0752-0.45459 0.07861-0.18799 0.25293-0.3623 0.17774-0.17773 0.33837-0.25293 0.16064-0.07861 0.41016-0.10596 0.21191-0.01367 0.30078-0.04785 0.09229-0.0376 0.17432-0.11963 0.08545-0.08545 0.14355-0.18115l0.04102-0.1128 0-1.5415-0.04102-0.16748q-0.12646-0.46143-0.43408-0.76904-0.44775-0.48877-1.13476-0.56055-0.16748-0.01367-4.81592-0.01367-4.64844 0-4.82959 0.02734z m4.84326 1.51416q0.01367 0.26318 0.02051 0.32813 0.00684 0.06152 0.04101 0.14013 0.0376 0.0752 0.10596 0.15381 0.07178 0.0752 0.15381 0.11963 0.15381 0.08203 0.3418 0.04785 0.19141-0.03418 0.33154-0.16064 0.11279-0.11279 0.14697-0.24609 0.03418-0.1333 0.03418-0.45459l0-0.29395 3.62647 0.01367 0.09912 0.04102q0.19482 0.09912 0.29394 0.29394 0.02734 0.07178 0.03418 0.13672 0.00684 0.06152 0.02051 0.35547l0 0.38965-0.11279 0.04443q-0.64258 0.2085-1.06983 0.71436-0.42725 0.50244-0.54004 1.17578-0.08203 0.4751 0.07178 0.98096 0.15381 0.50244 0.4751 0.8955 0.42041 0.46143 1.03564 0.66993l0.14014 0.0581 0 0.38965q0 0.2666-0.00684 0.34522-0.00684 0.07519-0.03418 0.1333-0.08545 0.16748-0.21191 0.26318l-0.01367 0q-0.08203 0.0581-0.15381 0.07178-0.12646 0.01367-0.4751 0.02734l-3.17871 0 0-0.29395q0-0.32129-0.03418-0.45459-0.03418-0.1333-0.14697-0.24609-0.14014-0.14014-0.35889-0.16064-0.21533-0.02051-0.37597 0.09228-0.16064 0.10938-0.21875 0.29395-0.02734 0.05469-0.03418 0.1333-0.00684 0.0752-0.00684 0.30078l0 0.33496-4.22803 0q-0.44775-0.01367-0.57422-0.02734-0.09912-0.01367-0.16748-0.05811l-0.02734-0.01367q-0.12646-0.0957-0.21191-0.26318-0.02734-0.05811-0.03418-0.1333-0.00684-0.07861-0.00684-0.34522l0-0.38965 0.14014-0.0581q0.61523-0.2085 1.03564-0.6836 0.42041-0.47852 0.52979-1.10742 0.11279-0.62891-0.10938-1.23389-0.18115-0.50244-0.56055-0.86474-0.37598-0.36572-0.8955-0.53321l-0.14014-0.0581 0-0.38965q0.01367-0.28027 0.02051-0.34863 0.00684-0.07178 0.03418-0.14356 0.11279-0.24951 0.37939-0.32129 0.08545-0.02734 2.45069-0.02734l2.36523 0 0 0.36572z m0.4751 1.98584q-0.12646 0.01367-0.2461 0.10596-0.11621 0.08887-0.17431 0.21533l-0.04102 0.09912 0 1.45606 0.04102 0.09912q0.04443 0.08203 0.11279 0.16064 0.07178 0.0752 0.14014 0.1128 0.07178 0.03418 0.16748 0.04785 0.23926 0.04102 0.43408-0.09229 0.19824-0.1333 0.23926-0.36914 0.02734-0.09912 0.02734-0.68701 0-0.58789-0.02734-0.68701-0.04102-0.23584-0.23242-0.36914-0.18799-0.1333-0.44092-0.09229z"
+                fill="#D1D5DB"
+              ></path>
+            </svg>
+            <div
+              data-pencil-name="BG Logo"
+              style="box-sizing: border-box; color: #D1D5DB; font-family: Inter, system-ui, sans-serif; font-size: 36px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              ticketmaster
+            </div>
+          </div>
+          <div
+            data-pencil-name="BG Hero"
+            style="align-items: center; background-color: #E5E7EB; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; flex: 1 1 0; gap: 8px; justify-content: center; width: 100%"
+          >
+            <div
+              data-pencil-name="BG Event"
+              style="box-sizing: border-box; color: #D1D5DB; font-family: Inter, system-ui, sans-serif; font-size: 56px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              Taylor Swift | The Eras Tour
+            </div>
+            <div
+              data-pencil-name="BG Date"
+              style="box-sizing: border-box; color: #D1D5DB; font-family: Inter, system-ui, sans-serif; font-size: 32px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              Sat, Jun 28 Â· 7:00 PM Â· MetLife Stadium
+            </div>
+          </div>
+        </div>
+        <div
+          data-pencil-name="Dim Overlay"
+          style="background-color: #00000080; box-sizing: border-box; height: 900px; left: 0px; position: absolute; top: 0px; width: 1440px; z-index: 1"
+        ></div>
+        <div
+          data-pencil-name="Sold Out Modal"
+          style="align-items: center; background-color: #FFFFFF; border-radius: 16px; box-shadow: 0px 8px 40px 0px #00000030; box-sizing: border-box; display: flex; flex-direction: column; gap: 40px; height: fit-content; justify-content: flex-start; left: 270px; padding: 72px 64px; position: absolute; top: 51px; width: 900px; z-index: 2"
+        >
+          <div
+            data-pencil-name="Sold Out Title"
+            style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 104px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: center; white-space: nowrap"
+          >
+            Tickets Have
+            <br />
+            Sold Out
+          </div>
+          <div
+            data-pencil-name="Sold Out Desc"
+            style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 48px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: 72px; text-align: center; width: 740px"
+          >
+            Unfortunately, all tickets for this event have been purchased. Check back later or
+            browse other events.
+          </div>
+          <div
+            data-pencil-name="Back Link"
+            style="box-sizing: border-box; color: #9CA3AF; font-family: Inter, system-ui, sans-serif; font-size: 36px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+          >
+            Return to event page
+          </div>
+        </div>
+        <div
+          data-pencil-name="Baseline Tag 5"
+          style="align-items: flex-start; background-color: #F3F4F6CC; border-radius: 4px; box-sizing: border-box; display: flex; flex-direction: row; gap: 0px; height: fit-content; justify-content: flex-start; left: 1304px; padding: 6px 14px; position: absolute; top: 12px; width: fit-content; z-index: 3"
+        >
+          <div
+            data-pencil-name="Tag Text 5"
+            style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 500; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+          >
+          </div>
+        </div>
+      </div>
+      <div
+        data-pencil-name="4 â€” Seat Selection"
+        style="align-items: flex-start; background-color: #FFFFFF; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 900px; justify-content: flex-start; left: 4560px; overflow: hidden; position: absolute; top: 0px; width: 1440px"
+      >
+        <div
+          data-pencil-name="Top Bar"
+          style="align-items: center; background-color: #FFFFFF; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 0px; height: fit-content; justify-content: space-between; padding: 20px 40px; position: relative; width: 100%; z-index: 0"
+        >
+          <div
+            data-pencil-name="Logo Area"
+            style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 12px; height: fit-content; justify-content: flex-start; width: fit-content"
+          >
+            <svg
+              data-pencil-name="Ticket Icon"
+              data-icon-name="ticket"
+              data-icon-set="lucide"
+              viewBox="0 0 13.99993896484375 14"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              style="box-sizing: border-box; flex-shrink: 0; height: 40px; width: 40px"
+            >
+              <path
+                d="M2.15674 2.35156q-0.29395 0.02734-0.58789 0.16748-0.29395 0.14014-0.50586 0.3794-0.32129 0.32129-0.43408 0.79638-0.02734 0.11279-0.03418 0.2461-0.00684 0.1333-0.00684 0.68017l0 0.75537 0.04102 0.1128q0.05811 0.0957 0.14013 0.18115 0.08545 0.08203 0.17432 0.11963 0.09229 0.03418 0.3042 0.04785 0.24951 0.02734 0.41015 0.10596 0.16064 0.0752 0.33497 0.25293 0.17773 0.17432 0.25293 0.3623 0.07861 0.18799 0.07861 0.45459 0 0.2666-0.11279 0.50586-0.06836 0.14014-0.23926 0.30762-0.16748 0.16748-0.3418 0.24609-0.17432 0.0752-0.44092 0.10254-0.16748 0-0.25976 0.04443-0.08887 0.04102-0.16748 0.11963-0.0752 0.0752-0.1333 0.1709l-0.04102 0.1128 0 1.5415 0.04102 0.16748q0.07178 0.25293 0.18115 0.44092 0.11279 0.18799 0.29394 0.37256 0.18457 0.18115 0.37256 0.29394 0.18799 0.10938 0.44092 0.18115l0.16748 0.04102 9.83008 0 0.16748-0.04102q0.25293-0.07178 0.44092-0.18115 0.18799-0.11279 0.36914-0.29394 0.18457-0.18457 0.29394-0.37256 0.11279-0.18799 0.18457-0.44092l0.04102-0.16748 0-1.5415-0.04102-0.1128q-0.05811-0.0957-0.13672-0.1709-0.0752-0.07861-0.16748-0.11963-0.08887-0.04443-0.25634-0.04443-0.2666-0.02734-0.44092-0.10254-0.17432-0.07861-0.34522-0.24609-0.16748-0.16748-0.23584-0.30762-0.11279-0.23926-0.11279-0.50586 0-0.2666 0.0752-0.45459 0.07861-0.18799 0.25293-0.3623 0.17774-0.17773 0.33837-0.25293 0.16064-0.07861 0.41016-0.10596 0.21191-0.01367 0.30078-0.04785 0.09229-0.0376 0.17432-0.11963 0.08545-0.08545 0.14355-0.18115l0.04102-0.1128 0-1.5415-0.04102-0.16748q-0.12646-0.46143-0.43408-0.76904-0.44775-0.48877-1.13476-0.56055-0.16748-0.01367-4.81592-0.01367-4.64844 0-4.82959 0.02734z m4.84326 1.51416q0.01367 0.26318 0.02051 0.32813 0.00684 0.06152 0.04101 0.14013 0.0376 0.0752 0.10596 0.15381 0.07178 0.0752 0.15381 0.11963 0.15381 0.08203 0.3418 0.04785 0.19141-0.03418 0.33154-0.16064 0.11279-0.11279 0.14697-0.24609 0.03418-0.1333 0.03418-0.45459l0-0.29395 3.62647 0.01367 0.09912 0.04102q0.19482 0.09912 0.29394 0.29394 0.02734 0.07178 0.03418 0.13672 0.00684 0.06152 0.02051 0.35547l0 0.38965-0.11279 0.04443q-0.64258 0.2085-1.06983 0.71436-0.42725 0.50244-0.54004 1.17578-0.08203 0.4751 0.07178 0.98096 0.15381 0.50244 0.4751 0.8955 0.42041 0.46143 1.03564 0.66993l0.14014 0.0581 0 0.38965q0 0.2666-0.00684 0.34522-0.00684 0.07519-0.03418 0.1333-0.08545 0.16748-0.21191 0.26318l-0.01367 0q-0.08203 0.0581-0.15381 0.07178-0.12646 0.01367-0.4751 0.02734l-3.17871 0 0-0.29395q0-0.32129-0.03418-0.45459-0.03418-0.1333-0.14697-0.24609-0.14014-0.14014-0.35889-0.16064-0.21533-0.02051-0.37597 0.09228-0.16064 0.10938-0.21875 0.29395-0.02734 0.05469-0.03418 0.1333-0.00684 0.0752-0.00684 0.30078l0 0.33496-4.22803 0q-0.44775-0.01367-0.57422-0.02734-0.09912-0.01367-0.16748-0.05811l-0.02734-0.01367q-0.12646-0.0957-0.21191-0.26318-0.02734-0.05811-0.03418-0.1333-0.00684-0.07861-0.00684-0.34522l0-0.38965 0.14014-0.0581q0.61523-0.2085 1.03564-0.6836 0.42041-0.47852 0.52979-1.10742 0.11279-0.62891-0.10938-1.23389-0.18115-0.50244-0.56055-0.86474-0.37598-0.36572-0.8955-0.53321l-0.14014-0.0581 0-0.38965q0.01367-0.28027 0.02051-0.34863 0.00684-0.07178 0.03418-0.14356 0.11279-0.24951 0.37939-0.32129 0.08545-0.02734 2.45069-0.02734l2.36523 0 0 0.36572z m0.4751 1.98584q-0.12646 0.01367-0.2461 0.10596-0.11621 0.08887-0.17431 0.21533l-0.04102 0.09912 0 1.45606 0.04102 0.09912q0.04443 0.08203 0.11279 0.16064 0.07178 0.0752 0.14014 0.1128 0.07178 0.03418 0.16748 0.04785 0.23926 0.04102 0.43408-0.09229 0.19824-0.1333 0.23926-0.36914 0.02734-0.09912 0.02734-0.68701 0-0.58789-0.02734-0.68701-0.04102-0.23584-0.23242-0.36914-0.18799-0.1333-0.44092-0.09229z"
+                fill="#0067F4"
+              ></path>
+            </svg>
+            <div
+              data-pencil-name="Logo Text"
+              style="box-sizing: border-box; color: #0067F4; font-family: Inter, system-ui, sans-serif; font-size: 40px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              ticketmaster
+            </div>
+          </div>
+          <div
+            data-pencil-name="Approach Badge"
+            style="align-items: center; background-color: #EEF2FF; border-radius: 4px; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 6px; height: fit-content; justify-content: flex-start; padding: 10px 20px; width: fit-content"
+          >
+            <div
+              data-pencil-name="Badge Text"
+              style="box-sizing: border-box; color: #0067F4; font-family: Inter, system-ui, sans-serif; font-size: 24px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+            </div>
+          </div>
+        </div>
+        <div
+          data-pencil-name="Baseline Tag"
+          style="align-items: flex-start; background-color: #F3F4F6; border-radius: 4px; box-sizing: border-box; display: flex; flex-direction: row; gap: 0px; height: fit-content; justify-content: flex-start; left: 1304px; padding: 4px 10px; position: absolute; top: 12px; width: fit-content; z-index: 1"
+        >
+          <div
+            data-pencil-name="Tag Text"
+            style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 500; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+          >
+          </div>
+        </div>
+        <div
+          data-pencil-name="Main Content"
+          style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: row; flex: 1 1 0; gap: 0px; justify-content: flex-start; position: relative; width: 100%; z-index: 2"
+        >
+          <div
+            data-pencil-name="Map Panel"
+            style="align-items: center; background-color: #F8F9FA; box-sizing: border-box; display: flex; flex-direction: column; flex: 1 1 0; gap: 32px; height: 100%; justify-content: center; padding: 40px 56px"
+          >
+            <div
+              data-pencil-name="Map Title"
+              style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 44px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              Select Your Seats
+            </div>
+            <div
+              data-pencil-name="Stadium"
+              style="border-radius: 16px; box-sizing: border-box; flex-shrink: 0; height: 440px; position: relative; width: 640px"
+            >
+              <div
+                data-pencil-name="VIP Floor"
+                style="align-items: center; background-color: #7B2FBECC; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 60px; justify-content: center; left: 200px; position: absolute; top: 20px; width: 240px; z-index: 0"
+              >
+                <div
+                  data-pencil-name="VIP Floor Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  VIP FLOOR
+                </div>
+              </div>
+              <div
+                data-pencil-name="Section A Left"
+                style="align-items: center; background-color: #0067F4CC; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 80px; justify-content: center; left: 60px; position: absolute; top: 100px; width: 160px; z-index: 1"
+              >
+                <div
+                  data-pencil-name="Section A Left Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  A LEFT
+                </div>
+              </div>
+              <div
+                data-pencil-name="Section A Center"
+                style="align-items: center; background-color: #0067F4CC; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 90px; justify-content: center; left: 240px; position: absolute; top: 90px; width: 160px; z-index: 2"
+              >
+                <div
+                  data-pencil-name="Section A Center Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  A CENTER
+                </div>
+              </div>
+              <div
+                data-pencil-name="Section A Right"
+                style="align-items: center; background-color: #0067F4CC; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 80px; justify-content: center; left: 420px; position: absolute; top: 100px; width: 160px; z-index: 3"
+              >
+                <div
+                  data-pencil-name="Section A Right Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  A RIGHT
+                </div>
+              </div>
+              <div
+                data-pencil-name="Section B Left"
+                style="align-items: center; background-color: #22C55ECC; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 80px; justify-content: center; left: 20px; position: absolute; top: 200px; width: 140px; z-index: 4"
+              >
+                <div
+                  data-pencil-name="Section B Left Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  B LEFT
+                </div>
+              </div>
+              <div
+                data-pencil-name="Section B Center"
+                style="align-items: center; background-color: #22C55ECC; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 80px; justify-content: center; left: 180px; position: absolute; top: 200px; width: 280px; z-index: 5"
+              >
+                <div
+                  data-pencil-name="Section B Center Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  B CENTER
+                </div>
+              </div>
+              <div
+                data-pencil-name="Section B Right"
+                style="align-items: center; background-color: #22C55ECC; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 80px; justify-content: center; left: 480px; position: absolute; top: 200px; width: 140px; z-index: 6"
+              >
+                <div
+                  data-pencil-name="Section B Right Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  B RIGHT
+                </div>
+              </div>
+              <div
+                data-pencil-name="Section C Left"
+                style="align-items: center; background-color: #F59E0BCC; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 70px; justify-content: center; left: 0px; position: absolute; top: 300px; width: 160px; z-index: 7"
+              >
+                <div
+                  data-pencil-name="Section C Left Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  C LEFT
+                </div>
+              </div>
+              <div
+                data-pencil-name="Section C Center"
+                style="align-items: center; background-color: #F59E0BCC; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 70px; justify-content: center; left: 180px; position: absolute; top: 300px; width: 280px; z-index: 8"
+              >
+                <div
+                  data-pencil-name="Section C Center Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  C CENTER
+                </div>
+              </div>
+              <div
+                data-pencil-name="Section C Right"
+                style="align-items: center; background-color: #F59E0BCC; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 70px; justify-content: center; left: 480px; position: absolute; top: 300px; width: 160px; z-index: 9"
+              >
+                <div
+                  data-pencil-name="Section C Right Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  C RIGHT
+                </div>
+              </div>
+              <div
+                data-pencil-name="Stage Area"
+                style="align-items: center; background-color: #1A1A1A; border-radius: 8px 8px 0px 0px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 36px; justify-content: center; left: 180px; position: absolute; top: 400px; width: 280px; z-index: 10"
+              >
+                <div
+                  data-pencil-name="Stage Label"
+                  style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 700; letter-spacing: 3px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  STAGE
+                </div>
+              </div>
+            </div>
+            <div
+              data-pencil-name="Legend"
+              style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 32px; height: fit-content; justify-content: flex-start; width: fit-content"
+            >
+              <div
+                data-pencil-name="Legend VIP Floor â€” $450+"
+                style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 10px; height: fit-content; justify-content: flex-start; width: fit-content"
+              >
+                <div
+                  data-pencil-name="Dot"
+                  style="background-color: #7B2FBE; border-radius: 3px; box-sizing: border-box; flex-shrink: 0; height: 20px; width: 20px"
+                ></div>
+                <div
+                  data-pencil-name="Tier Label"
+                  style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 24px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  VIP Floor â€” $450+
+                </div>
+              </div>
+              <div
+                data-pencil-name="Legend Section A â€” $250"
+                style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 10px; height: fit-content; justify-content: flex-start; width: fit-content"
+              >
+                <div
+                  data-pencil-name="Dot"
+                  style="background-color: #0067F4; border-radius: 3px; box-sizing: border-box; flex-shrink: 0; height: 20px; width: 20px"
+                ></div>
+                <div
+                  data-pencil-name="Tier Label"
+                  style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 24px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  Section A $250
+                </div>
+              </div>
+              <div
+                data-pencil-name="Legend Section B â€” $150"
+                style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 10px; height: fit-content; justify-content: flex-start; width: fit-content"
+              >
+                <div
+                  data-pencil-name="Dot"
+                  style="background-color: #22C55E; border-radius: 3px; box-sizing: border-box; flex-shrink: 0; height: 20px; width: 20px"
+                ></div>
+                <div
+                  data-pencil-name="Tier Label"
+                  style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 24px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  Section B â€” $150
+                </div>
+              </div>
+              <div
+                data-pencil-name="Legend Section C â€” $85"
+                style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 10px; height: fit-content; justify-content: flex-start; width: fit-content"
+              >
+                <div
+                  data-pencil-name="Dot"
+                  style="background-color: #F59E0B; border-radius: 3px; box-sizing: border-box; flex-shrink: 0; height: 20px; width: 20px"
+                ></div>
+                <div
+                  data-pencil-name="Tier Label"
+                  style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 24px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  Section C â€” $85
+                </div>
+              </div>
+            </div>
+            <div
+              data-pencil-name="Available Seats Tag"
+              style="align-items: center; background-color: #ECFDF5; border-radius: 20px; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 10px; height: fit-content; justify-content: flex-start; padding: 10px 20px; width: fit-content"
+            >
+              <div
+                data-pencil-name="Green Dot"
+                style="background-color: #22C55E; border-radius: 50%; box-sizing: border-box; flex-shrink: 0; height: 14px; width: 14px"
+              ></div>
+              <div
+                data-pencil-name="Avail Text"
+                style="box-sizing: border-box; color: #16A34A; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 500; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                1,247 Available Seats
+              </div>
+            </div>
+          </div>
+          <div
+            data-pencil-name="Sidebar"
+            style="align-items: flex-start; background-color: #FFFFFF; border-color: #E5E7EB; border-style: solid; border-width: 0px 0px 0px 1px; box-sizing: border-box; display: flex; flex-direction: column; flex-shrink: 0; gap: 28px; height: 100%; justify-content: flex-start; padding: 40px 36px; width: 480px"
+          >
+            <div
+              data-pencil-name="Event Title"
+              style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 36px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; width: 100%"
+            >
+              Taylor Swift | The Eras Tour
+            </div>
+            <div
+              data-pencil-name="Event Date"
+              style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 28px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; width: 100%"
+            >
+              Sat, Jun 28 Â· 7:00 PM Â· MetLife Stadium
+            </div>
+            <div
+              data-pencil-name="Divider"
+              style="background-color: #E5E7EB; box-sizing: border-box; flex-shrink: 0; height: 1px; width: 100%"
+            ></div>
+            <div
+              data-pencil-name="Selection Info"
+              style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: column; flex-shrink: 0; gap: 16px; height: fit-content; justify-content: flex-start; width: 100%"
+            >
+              <div
+                data-pencil-name="Selection Title"
+                style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 30px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                Your Selection
+              </div>
+              <div
+                data-pencil-name="No Selection"
+                style="box-sizing: border-box; color: #9CA3AF; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; width: 100%"
+              >
+                Click a section on the map to view available seats
+              </div>
+            </div>
+            <div
+              data-pencil-name="Divider 2"
+              style="background-color: #E5E7EB; box-sizing: border-box; flex-shrink: 0; height: 1px; width: 100%"
+            ></div>
+            <div
+              data-pencil-name="Price Summary"
+              style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: column; flex-shrink: 0; gap: 14px; height: fit-content; justify-content: flex-start; width: 100%"
+            >
+              <div
+                data-pencil-name="Price Title"
+                style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 30px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                Price Summary
+              </div>
+              <div
+                data-pencil-name="Row Tickets (2x)"
+                style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 0px; height: fit-content; justify-content: space-between; width: 100%"
+              >
+                <div
+                  data-pencil-name="Label"
+                  style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  Tickets (2x)
+                </div>
+                <div
+                  data-pencil-name="Value"
+                  style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  $300.00
+                </div>
+              </div>
+              <div
+                data-pencil-name="Row Service Fee"
+                style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 0px; height: fit-content; justify-content: space-between; width: 100%"
+              >
+                <div
+                  data-pencil-name="Label"
+                  style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  Service Fee
+                </div>
+                <div
+                  data-pencil-name="Value"
+                  style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  $45.00
+                </div>
+              </div>
+              <div
+                data-pencil-name="Row Facility Fee"
+                style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 0px; height: fit-content; justify-content: space-between; width: 100%"
+              >
+                <div
+                  data-pencil-name="Label"
+                  style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  Facility Fee
+                </div>
+                <div
+                  data-pencil-name="Value"
+                  style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  $12.00
+                </div>
+              </div>
+              <div
+                data-pencil-name="Divider 3"
+                style="background-color: #E5E7EB; box-sizing: border-box; flex-shrink: 0; height: 1px; width: 100%"
+              ></div>
+              <div
+                data-pencil-name="Total Row"
+                style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 0px; height: fit-content; justify-content: space-between; width: 100%"
+              >
+                <div
+                  data-pencil-name="Total Label"
+                  style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 30px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  Total
+                </div>
+                <div
+                  data-pencil-name="Total Value"
+                  style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 30px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+                >
+                  $357.00
+                </div>
+              </div>
+            </div>
+            <div
+              data-pencil-name="Spacer"
+              style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: row; flex: 1 1 0; gap: 0px; justify-content: flex-start; width: 100%"
+            ></div>
+            <div
+              data-pencil-name="Checkout Button"
+              style="align-items: center; background-color: #0067F4; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 0px; height: fit-content; justify-content: center; padding: 20px 0px; width: 100%"
+            >
+              <div
+                data-pencil-name="Checkout Label"
+                style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 30px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                Proceed to Checkout
+              </div>
+            </div>
+            <div
+              data-pencil-name="Timer Row"
+              style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 10px; height: fit-content; justify-content: center; width: 100%"
+            >
+              <svg
+                data-pencil-name="Clock Icon"
+                data-icon-name="timer"
+                data-icon-set="lucide"
+                viewBox="0 0 13.99993896484375 14"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+                style="box-sizing: border-box; flex-shrink: 0; height: 24px; width: 24px"
+              >
+                <path
+                  d="M5.7251 0.60156q-0.18115 0.02734-0.32129 0.18115-0.14014 0.15381-0.15381 0.35206 0 0.14014 0.06152 0.28027 0.06494 0.14014 0.19141 0.22217l0.01367 0.01367q0.06836 0.05811 0.15039 0.07178 0.08545 0.01367 0.35205 0.02734l1.96192 0q0.2666-0.01367 0.34863-0.02734 0.08545-0.01367 0.15381-0.07178l0.01367-0.01367q0.21191-0.14014 0.24609-0.36914 0.03418-0.23242-0.09912-0.43409-0.1333-0.20508-0.38281-0.23242-0.11279-0.02734-1.2749-0.02734-1.16211 0-1.26123 0.02734z m0.77246 2.33789q-0.98096 0.09912-1.86963 0.54688-0.88867 0.44775-1.54834 1.18945-1.07666 1.2168-1.30225 2.88477-0.02734 0.2085-0.0205 0.64941 0.00684 0.44092 0.03418 0.63916 0.09912 0.71436 0.34863 1.32276 0.25293 0.6084 0.67334 1.16894 0.15381 0.19482 0.44092 0.48877 0.28711 0.29395 0.47168 0.44775 0.43408 0.33496 0.93652 0.58789 0.58789 0.28027 1.1416 0.41358 0.55371 0.1333 1.19629 0.1333 0.64258 0 1.19629-0.1333 0.55371-0.1333 1.1416-0.41358 0.40674-0.2085 0.72119-0.4375 0.31445-0.23242 0.66651-0.58447 0.85107-0.84082 1.24414-1.95849 0.25293-0.72803 0.27343-1.54493 0.02051-0.82031-0.17431-1.56543-0.2666-0.93652-0.82715-1.69873-0.56055-0.76221-1.37061-1.30908-0.16748-0.11279-0.50586-0.28027-0.33496-0.16748-0.52978-0.23926-0.54688-0.19482-1.13477-0.28027-0.16748-0.02734-0.60156-0.03418-0.43408-0.00684-0.60156 0.00683z m0.96387 1.17578q0.98096 0.09912 1.82519 0.68018 0.84766 0.58105 1.32617 1.46289 0.43408 0.82715 0.46143 1.77734 0.02734 1.0083-0.39307 1.87647-0.15381 0.34863-0.33496 0.60156-0.18115 0.25293-0.44775 0.51953-0.2666 0.26318-0.50586 0.44092-0.23584 0.17432-0.55713 0.3418-1.06641 0.5332-2.24902 0.41357-1.18262-0.11963-2.13282-0.875-0.22559-0.18115-0.49218-0.46826-0.2666-0.28711-0.43409-0.56738-0.62891-0.99463-0.60839-2.20459 0.02051-1.21338 0.68017-2.20459 0.60156-0.9126 1.59619-1.40137 1.03564-0.51953 2.26612-0.39307z m1.18945 1.73633q-0.0957 0.01367-0.16748 0.05127-0.06836 0.03418-1.03565 0.98438-0.67334 0.68701-0.82031 0.84082-0.14697 0.15381-0.17432 0.22558-0.06836 0.2085 0.01368 0.42725 0.08545 0.21533 0.28027 0.31445 0.09912 0.04102 0.25293 0.04102l0.02734 0q0.11279 0 0.19483-0.04102 0.08545-0.04443 0.29736-0.23926 0.15381-0.14014 0.66992-0.65966l0.1128-0.10938q0.67334-0.67334 0.82031-0.83398 0.14697-0.16064 0.17431-0.23242 0.06836-0.2085-0.00341-0.39649-0.06836-0.19141-0.24268-0.30078-0.17432-0.11279-0.3999-0.07178z"
+                  fill="#9CA3AF"
+                ></path>
+              </svg>
+              <div
+                data-pencil-name="Timer Text"
+                style="box-sizing: border-box; color: #9CA3AF; font-family: Inter, system-ui, sans-serif; font-size: 24px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+              >
+                Time remaining: 4:32
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        data-pencil-name="3 â€” Interruption Screen"
+        style="align-items: center; background-color: #FFFFFF; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 900px; justify-content: center; left: 3040px; overflow: hidden; position: absolute; top: 0px; width: 1440px"
+      >
+        <div
+          data-pencil-name="Interruption Content"
+          style="align-items: center; box-sizing: border-box; display: flex; flex-direction: column; flex-shrink: 0; gap: 48px; height: fit-content; justify-content: center; width: 1440px"
+        >
+          <div
+            data-pencil-name="Interruption Heading"
+            style="-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-color: #1A1A1A; background-image: linear-gradient(#00000033, #00000033), linear-gradient(#00000033, #00000033); background-repeat: no-repeat, no-repeat; background-size: 100% 100%, 100% 100%; box-sizing: border-box; color: transparent; filter: drop-shadow(0px 4px 2px #00000040); font-family: Inter, system-ui, sans-serif; font-size: 116px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: 139px; text-align: center; width: 100%"
+          >
+            We apologize for the interruption
+          </div>
+          <div
+            data-pencil-name="Explanation"
+            style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 48px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: 72px; text-align: center; width: 100%"
+          >
+            Due to unprecedented traffic, we needed to refresh the queue. Your position has been
+            preserved.
+          </div>
+          <div
+            data-pencil-name="Refresh Button"
+            style="align-items: center; background-color: #0067F4; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 0px; height: fit-content; justify-content: center; padding: 20px 56px; width: fit-content"
+          >
+            <div
+              data-pencil-name="Refresh Label"
+              style="box-sizing: border-box; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-size: 44px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              Refresh
+            </div>
+          </div>
+          <div
+            data-pencil-name="Queue Preserved Note"
+            style="box-sizing: border-box; color: #9CA3AF; font-family: Inter, system-ui, sans-serif; font-size: 40px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: center; width: 100%"
+          >
+            Your queue position: #300,701
+          </div>
+        </div>
+      </div>
+      <div
+        data-pencil-name="2 â€” Queue Page"
+        style="align-items: center; background-color: #FFFFFF; box-sizing: border-box; display: flex; flex-direction: column; gap: 0px; height: 900px; justify-content: center; left: 1520px; overflow: hidden; position: absolute; top: 0px; width: 1440px"
+      >
+        <div
+          data-pencil-name="Baseline Tag"
+          style="align-items: flex-start; background-color: #F3F4F6; border-radius: 4px; box-sizing: border-box; display: flex; flex-direction: row; gap: 0px; height: fit-content; justify-content: flex-start; left: 1220px; padding: 4px 10px; position: absolute; top: 12px; width: fit-content; z-index: 0"
+        >
+          <div
+            data-pencil-name="Tag Text"
+            style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 22px; font-style: normal; font-weight: 500; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+          >
+          </div>
+        </div>
+        <div
+          data-pencil-name="Queue Content"
+          style="align-items: center; box-sizing: border-box; display: flex; flex-direction: column; flex-shrink: 0; gap: 40px; height: fit-content; justify-content: flex-start; position: relative; width: 800px; z-index: 1"
+        >
+          <div
+            data-pencil-name="Logo"
+            style="box-sizing: border-box; color: #0067F4; font-family: Inter, system-ui, sans-serif; font-size: 40px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+          >
+            ticketmaster
+          </div>
+          <div
+            data-pencil-name="Queue Heading"
+            style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 60px; font-style: normal; font-weight: 600; letter-spacing: 0px; line-height: normal; text-align: center; width: 100%"
+          >
+            Your place in the queue is being processed
+          </div>
+          <div
+            data-pencil-name="Progress Area"
+            style="align-items: flex-start; box-sizing: border-box; display: flex; flex-direction: column; flex-shrink: 0; gap: 16px; height: fit-content; justify-content: flex-start; width: 100%"
+          >
+            <div
+              data-pencil-name="Progress Track"
+              style="background-color: #E5E7EB; border-radius: 4px; box-sizing: border-box; flex-shrink: 0; height: 8px; position: relative; width: 100%"
+            >
+              <div
+                data-pencil-name="Progress Fill"
+                style="background-image: linear-gradient(90deg, #7B2FBE 0%, #0067F4 100%); background-repeat: no-repeat; background-size: 100% 100%; border-radius: 4px; box-sizing: border-box; height: 8px; left: 0px; position: absolute; top: 0px; width: 208px; z-index: 0"
+              ></div>
+            </div>
+            <div
+              data-pencil-name="Progress Percent"
+              style="box-sizing: border-box; color: #9CA3AF; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: center; width: 100%"
+            >
+              Estimated wait: ~12 minutes
+            </div>
+          </div>
+          <div
+            data-pencil-name="Queue Number Block"
+            style="align-items: center; background-color: #FFFFFF; border-radius: 12px; border: 1px solid #E5E7EB; box-sizing: border-box; display: flex; flex-direction: column; flex-shrink: 0; gap: 4px; height: fit-content; justify-content: flex-start; padding: 28px 48px; width: 100%"
+          >
+            <div
+              data-pencil-name="Queue Label"
+              style="box-sizing: border-box; color: #9CA3AF; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              Your queue number
+            </div>
+            <div
+              data-pencil-name="Queue Number"
+              style="box-sizing: border-box; color: #1A1A1A; font-family: Inter, system-ui, sans-serif; font-size: 72px; font-style: normal; font-weight: 700; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              300,701
+            </div>
+          </div>
+          <div
+            data-pencil-name="Status Row"
+            style="align-items: center; box-sizing: border-box; display: flex; flex-direction: row; flex-shrink: 0; gap: 8px; height: fit-content; justify-content: flex-start; width: fit-content"
+          >
+            <div
+              data-pencil-name="Green Dot"
+              style="background-color: #22C55E; border-radius: 50%; box-sizing: border-box; flex-shrink: 0; height: 8px; width: 8px"
+            ></div>
+            <div
+              data-pencil-name="Status Text"
+              style="box-sizing: border-box; color: #6B7280; font-family: Inter, system-ui, sans-serif; font-size: 26px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+            >
+              Status last updated: 14:14:18
+            </div>
+          </div>
+          <div
+            data-pencil-name="Queue ID"
+            style="box-sizing: border-box; color: #9CA3AF; font-family: Inter, system-ui, sans-serif; font-size: 24px; font-style: normal; font-weight: 400; letter-spacing: 0px; line-height: normal; text-align: left; white-space: nowrap"
+          >
+            Queue ID: TM-2024-ERAS-BL-300701
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <script>
+    window.goTo = null;
+    (function () {
+      const slides   = document.getElementById('slides');
+      const DESIGN_W = 1440;
+      const DESIGN_H = 900;
+      const positions = { 1: 0, 2: 1520, 3: 3040, 4: 4560, 5: 6080 };
+      let currentPage = 1;
+
+      // ── Scale to fit both viewport width and height ───────────────
+      function getScale() {
+        return Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H);
+      }
+
+      // ── Navigate ───────────────────────────────────────────────────
+      window.goTo = function goTo(page) {
+        currentPage = page;
+        const s  = getScale();
+        const px = positions[page];
+        const offsetX = (window.innerWidth  - DESIGN_W * s) / 2;
+        const offsetY = (window.innerHeight - DESIGN_H * s) / 2;
+        slides.style.transformOrigin = '0 0';
+        slides.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${s}) translateX(-${px}px)`;
+      }
+
+      // Queue Page â†’ inject a natural "Refresh page" link
+      const queueId = document.querySelector('[data-pencil-name="Queue ID"]');
+      const refreshLink = document.createElement('div');
+      refreshLink.className = 'queue-refresh-link';
+      refreshLink.textContent = 'Refresh page to check status â†’';
+      queueId.insertAdjacentElement('afterend', refreshLink);
+
+      // â”€â”€ Resize â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      window.addEventListener('resize', () => goTo(currentPage));
+
+      // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      goTo(1);
+    })();
+    </script>
+    <script src="baseline_approach.js"></script>
+  </body>
+</html>
+

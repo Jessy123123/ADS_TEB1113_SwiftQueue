@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+        .animate-pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#edf0ff",
+                        "surface-bright": "#f9f9ff",
+                        "secondary": "#5444d3",
+                        "surface": "#f9f9ff",
+                        "on-secondary-fixed-variant": "#3e29bd",
+                        "inverse-primary": "#b5c4ff",
+                        "tertiary": "#852b00",
+                        "on-surface-variant": "#434654",
+                        "background": "#f9f9ff",
+                        "on-secondary-container": "#fffbff",
+                        "surface-container": "#e9edff",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#ffd4c5",
+                        "primary-fixed-dim": "#b5c4ff",
+                        "secondary-container": "#6d5fed",
+                        "on-primary-fixed-variant": "#003dab",
+                        "inverse-surface": "#293040",
+                        "on-background": "#141b2b",
+                        "on-secondary": "#ffffff",
+                        "outline": "#737686",
+                        "on-tertiary-fixed-variant": "#802a00",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#380d00",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#c5c0ff",
+                        "tertiary-fixed": "#ffdbcf",
+                        "primary": "#003fb1",
+                        "surface-container-highest": "#dce2f7",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#c3c5d7",
+                        "on-surface": "#141b2b",
+                        "on-secondary-fixed": "#150067",
+                        "on-primary-container": "#d4dcff",
+                        "surface-container-low": "#f1f3ff",
+                        "secondary-fixed": "#e4dfff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e1e8fd",
+                        "surface-dim": "#d3daef",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#ad3b00",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-fixed": "#00174d",
+                        "surface-tint": "#1353d8",
+                        "primary-container": "#1a56db",
+                        "surface-variant": "#dce2f7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "unit": "4px",
+                        "stack-md": "16px",
+                        "gutter": "24px",
+                        "margin-desktop": "48px",
+                        "stack-lg": "32px",
+                        "container-max": "1280px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "title-lg": ["Sora"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "caption": ["Inter"],
+                        "display-lg": ["Sora"],
+                        "headline-md-mobile": ["Sora"],
+                        "headline-md": ["Sora"],
+                        "display-lg-mobile": ["Sora"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "title-lg": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "caption": ["12px", { "lineHeight": "1", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-md": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-[#FAFAF8] text-on-surface font-body-md min-h-screen flex flex-col" data-page="queue-interruption">
+<!-- Top Navigation (Reduced/Suppressed for Focus) -->
+<header class="fixed top-0 w-full bg-[#FAFAF8]/90 backdrop-blur-xl z-50">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-20 flex items-center justify-between">
+<a class="font-display-lg text-[24px] md:text-display-lg tracking-tighter text-primary" href="event-detail.html">ticketmaster</a>
+<div class="flex items-center gap-stack-md">
+<span class="text-on-surface-variant font-label-md text-label-md hidden md:block">Safe &amp; Secure Ticketing</span>
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">lock</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex flex-center items-center justify-center px-margin-mobile py-24">
+<div class="max-w-[720px] w-full text-center space-y-stack-lg">
+<!-- Atmospheric Visual (Subtle) -->
+<div class="relative w-24 h-24 mx-auto mb-stack-lg flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/10 rounded-full animate-pulse-ring"></div>
+<div class="absolute inset-0 bg-primary/5 rounded-full scale-125 animate-pulse-ring" style="animation-delay: 0.5s"></div>
+<div class="relative w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px]">sync</span>
+</div>
+</div>
+<!-- Content Hero -->
+<div class="space-y-stack-sm">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface tracking-tight">
+                    We apologize for <br class="hidden md:block"/> the interruption
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-[540px] mx-auto leading-relaxed">
+                    Due to unprecedented traffic, we needed to refresh the queue. Your position has been preserved.
+                </p>
+</div>
+<!-- CTA Section -->
+<div class="pt-stack-md">
+<button id="interruption-refresh-btn" type="button" class="bg-primary-container hover:bg-primary-container/90 text-on-primary font-label-md text-label-md h-14 px-12 rounded-full inline-flex items-center justify-center gap-stack-sm transition-all duration-200 active:scale-95 shadow-lg shadow-primary-container/20 group">
+<span class="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500">refresh</span>
+                    Refresh
+                </button>
+</div>
+<!-- Detail Info -->
+<div class="pt-12 space-y-stack-sm">
+<div class="flex items-center justify-center gap-2 text-on-surface-variant font-label-md text-label-md">
+<span class="opacity-60">Your queue position:</span>
+<span class="font-semibold text-on-surface">#300,701</span>
+</div>
+<div class="flex items-center justify-center gap-2">
+<div class="flex gap-1 items-center">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" style="animation-delay: 0.2s"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" style="animation-delay: 0.4s"></span>
+</div>
+<span class="text-on-surface-variant font-caption text-caption uppercase tracking-widest" id="timer">checking availability in 3s...</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-inverse-surface border-t border-outline-variant/20 py-stack-lg">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-stack-md">
+<div class="font-title-lg text-title-lg text-on-surface select-none">ticketmaster</div>
+<div class="flex flex-wrap justify-center gap-stack-md text-on-surface-variant font-caption text-caption uppercase tracking-wider">
+<a class="hover:text-primary transition-colors" href="#">Terms of Use</a>
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Help Center</a>
+<a class="hover:text-primary transition-colors" href="#">Sell Tickets</a>
+</div>
+<p class="text-on-surface-variant font-caption text-caption opacity-60">
+                © 2024 Ticketmaster. Premium Event Discovery.
+            </p>
+</div>
+</footer>
+<!-- Image Placeholders (Invisible for standard components but present for injection) -->
+<div class="hidden">
+<img data-alt="A serene and expansive concert venue at twilight with a soft sunset in the distance. The atmosphere is calm and expectant, with high-end architectural details and a refined blue and cream color palette. The lighting is ethereal and sophisticated, reflecting a premium digital ticketing experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9S_BZjEEyLROzKX4mv1sdA8N2iHyDKpiV6wZEY2wtSlazI2FK97yypYdsWgDu_0Jfw5GNF76Lja05mtlBzWnkI_1X9B6WqwExOb_jfpMm_L-DFDHLQXqk3IGwQyCePOvrK2L-Fg1NHRthvX8GnddUNeYcwhbdxllyq3ArtTpYzhOLjftC9GZk-OSnlHimZSiaVt9KH2PQIG1mjFgXM2WlyGKMjet68AtJve36OIkFC38fHQRYJGXF-etYGfgyOOJ9oo9rLpQ0Z1c"/>
+<img data-alt="Close up of a premium digital concert ticket displayed on a high-end smartphone screen. The UI design on the phone is minimalist with glassmorphism effects and cobalt blue accents. The background is a warm white studio setting with soft ambient shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpm_ToxdMu2TlMuzzx7itKqXJefi6l2FCSl_YQt0EanuUolBuHI24R5sQw5CP4nkBnl_yAwtfSXYqPLGsYnO4O4acyQNYTvULgPaM95b1uvT9XEE4yqj8u6-dnpAJWneuCoezWtP3R_0oTPnqTiPCzFQfGx2TtFlKcXQfzV-WqkwAhCd2HW1oOO6KAzCnesNr35CQeb4-pF73Zu8-HVHhxTQkAKUo5U2vA_L4cNf1v_UBzlsoqZcUhgSRW6YgSCijqsNyVdNEPCTA"/>
+</div>
+<script src="baseline_approach.js"></script>
+</body></html>
