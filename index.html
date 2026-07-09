@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SwiftQueue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+    <style>
+      *, ::before, ::after { box-sizing: border-box; }
+      body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #FFFFFF; color: #1A1A1A; }
+
+      .navbar {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 40px; height: 72px;
+        border-bottom: 1px solid #E5E7EB; background: #FFFFFF;
+      }
+      .logo { color: #0067F4; font-size: 28px; font-weight: 700; }
+      .logo span { color: #1A1A1A; }
+      .navbar a { color: #6B7280; font-size: 15px; font-weight: 500; text-decoration: none; }
+      .navbar a:hover { color: #0067F4; }
+
+      .hero {
+        position: relative;
+        background: linear-gradient(180deg, rgba(26,26,26,0.55), rgba(26,26,26,0.75)),
+                    url('assets/hero.jpg') center/cover no-repeat;
+        background-color: #1a1a2e;
+        color: #FFFFFF;
+        padding: 96px 40px 88px;
+        text-align: center;
+      }
+      .hero-tag {
+        display: inline-block; background: rgba(255,255,255,0.12); border-radius: 20px;
+        padding: 8px 18px; font-size: 14px; font-weight: 600; letter-spacing: 1px;
+        color: #C7D8FF; margin-bottom: 24px;
+      }
+      .hero h1 { font-size: 48px; font-weight: 700; line-height: 1.15; margin: 0 0 20px; }
+      .hero p {
+        font-size: 19px; line-height: 1.6; color: #E5E7EB; max-width: 680px;
+        margin: 0 auto; font-weight: 400;
+      }
+
+      .container { max-width: 1080px; margin: 0 auto; padding: 72px 40px; }
+
+      .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+      @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
+
+      .card {
+        border: 1px solid #E5E7EB; border-radius: 16px; padding: 36px;
+        display: flex; flex-direction: column; gap: 16px; text-decoration: none;
+        color: inherit; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+        background: #FFFFFF;
+      }
+      .card:hover {
+        transform: translateY(-2px); border-color: #0067F4;
+        box-shadow: 0 8px 24px rgba(0,103,244,0.12);
+      }
+      .card-tag {
+        align-self: flex-start; border-radius: 6px; padding: 6px 14px;
+        font-size: 13px; font-weight: 700; letter-spacing: 1px;
+      }
+      .card-tag.baseline { background: #FEE2E2; color: #DC2626; }
+      .card-tag.optimized { background: #EEF2FF; color: #0067F4; }
+      .card h2 { font-size: 24px; font-weight: 700; margin: 0; }
+      .card p { font-size: 16px; line-height: 1.6; color: #6B7280; margin: 0; }
+      .card-cta {
+        display: flex; align-items: center; gap: 8px; font-size: 15px;
+        font-weight: 600; color: #0067F4; margin-top: 4px;
+      }
+      .card-cta .arrow { transition: transform 0.15s; }
+      .card:hover .card-cta .arrow { transform: translateX(4px); }
+
+      .compare { margin-top: 72px; }
+      .compare h3 { font-size: 22px; font-weight: 700; margin: 0 0 24px; }
+      table { width: 100%; border-collapse: collapse; font-size: 15px; }
+      th, td { text-align: left; padding: 14px 16px; border-bottom: 1px solid #E5E7EB; }
+      th { color: #6B7280; font-weight: 600; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; }
+      td { color: #1A1A1A; line-height: 1.5; }
+      td:first-child { color: #6B7280; font-weight: 500; white-space: nowrap; }
+
+      .links-row { margin-top: 48px; display: flex; gap: 24px; flex-wrap: wrap; }
+      .links-row a { color: #6B7280; font-size: 14px; text-decoration: none; border-bottom: 1px solid #E5E7EB; padding-bottom: 2px; }
+      .links-row a:hover { color: #0067F4; border-color: #0067F4; }
+
+      footer {
+        border-top: 1px solid #E5E7EB; padding: 28px 40px; text-align: center;
+        color: #9CA3AF; font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo">Swift<span>Queue</span></div>
+      <a href="https://github.com/Jessy123123/ADS_TEB1113_SwiftQueue" target="_blank" rel="noopener">View on GitHub</a>
+    </nav>
+
+    <div class="hero">
+      <div class="hero-tag">ADS TEB1113 · ALGORITHM &amp; DATA STRUCTURE</div>
+      <h1>SwiftQueue</h1>
+      <p>
+        A before/after dashboard modeling Ticketmaster's 2022 Taylor Swift (Eras Tour)
+        presale queue failure — comparing a naive baseline queue against a linked-list-driven
+        optimized redesign.
+      </p>
+    </div>
+
+    <div class="container">
+      <div class="cards">
+        <a class="card" href="baseline_approach/index.html">
+          <span class="card-tag baseline">BASELINE APPROACH</span>
+          <h2>Array-based random queue</h2>
+          <p>
+            Tickets get a random unique number checked against existing entries.
+            Refreshing the page discards your position and issues a new one —
+            rewarding spam-refresh over fairness.
+          </p>
+          <span class="card-cta">Open baseline demo <span class="arrow">&rarr;</span></span>
+        </a>
+
+        <a class="card" href="optimised.html">
+          <span class="card-tag optimized">OPTIMIZED APPROACH</span>
+          <h2>Linked-queue with live simulation</h2>
+          <p>
+            A singly linked list used as a FIFO queue. Joining appends to the tail
+            in O(1), and refreshing finds your node again so your real position
+            is always restored.
+          </p>
+          <span class="card-cta">Open optimized demo <span class="arrow">&rarr;</span></span>
+        </a>
+      </div>
+
+      <div class="compare">
+        <h3>At a glance</h3>
+        <table>
+          <thead>
+            <tr><th></th><th>Baseline</th><th>Optimized</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Structure</td>
+              <td>Array / flat list, random ticket assignment</td>
+              <td>Singly linked list used as a FIFO queue</td>
+            </tr>
+            <tr>
+              <td>Join queue</td>
+              <td>Random unique number, collision-checked</td>
+              <td>Append to tail</td>
+            </tr>
+            <tr>
+              <td>Refresh / reconnect</td>
+              <td>Not supported — discards position, issues a new number</td>
+              <td>Linear scan restores your real position</td>
+            </tr>
+            <tr>
+              <td>Fairness</td>
+              <td>No — refreshing can improve your position</td>
+              <td>Yes — arrival order is always preserved</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="links-row">
+        <a href="docs/PROBLEM_STATEMENT.md">Problem statement</a>
+        <a href="docs/DESIGN_BASELINE_VS_OPTIMIZED.md">Design &amp; Big-O breakdown</a>
+        <a href="backup_algo/demo.py">Python terminal demo</a>
+      </div>
+    </div>
+
+    <footer>SwiftQueue — Group project for ADS TEB1113</footer>
+  </body>
+</html>
