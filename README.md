@@ -22,12 +22,25 @@ Full design and Big-O breakdown: [docs/DESIGN_BASELINE_VS_OPTIMIZED.md](docs/DES
 
 ```
 ADS_TEB1113_SwiftQueue/
-├── baseline_approach.html      # Baseline: 5 screens with navigation
-├── optimised.html              # Optimized: 4 screens with live JS queue simulation
-├── optimized/                  # Supporting Python terminal demos
-│   ├── linked_queue.py         #   Node + LinkedQueue implementation
-│   └── demo.py                 #   terminal walkthrough: join, refresh, position restored
-│   └── benchmark.py                 #   terminal walkthrough: join, refresh, position restored
+├── index.html                   # Landing page, links to both approaches
+├── baseline_approach/           # Baseline: multi-page flow, no session persistence
+│   ├── index.html                 #   redirects to event-detail.html
+│   ├── event-detail.html
+│   ├── waiting-room.html
+│   ├── queue-interruption.html
+│   ├── seat-selection.html
+│   ├── sold-out.html
+│   ├── baseline_approach.js
+│   └── styles.css
+├── optimised.html                # Optimized: single-page app, live JS queue simulation, 4 screens
+├── optimised/                    # Supporting SQL for the live Supabase-backed demo
+│   └── supabase_setup.sql          #   RLS policies + RPC
+├── backup_algo/                  # Supporting Python terminal demos
+│   ├── linked_queue.py             #   Node + LinkedQueue implementation
+│   ├── demo.py                     #   terminal walkthrough: join, refresh, position restored
+│   └── benchmark.py
+├── assets/
+│   └── hero.jpg
 └── docs/
     ├── PROBLEM_STATEMENT.md
     └── DESIGN_BASELINE_VS_OPTIMIZED.md
@@ -35,9 +48,9 @@ ADS_TEB1113_SwiftQueue/
 
 ## How to run
 
-Open `optimised.html` directly in a browser. No server or install required.
+Open `index.html` to reach the landing page, then choose a flow. Or open `optimised.html` directly. No server or install required.
 
-The simulation is fully self-contained in JavaScript inside the HTML file.
+The optimized simulation is fully self-contained in JavaScript inside the HTML file.
 
 ## Optimised flow
 

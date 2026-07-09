@@ -435,7 +435,7 @@
     // declaration and assign
     // this local queue only ever holds THIS device's own node (privacy:
     // no anon client can ever read anyone else's name/session id, see
-    // optimized/supabase_setup.sql). the live total across every device
+    // optimised/supabase_setup.sql). the live total across every device
     // comes from the anonymized queue_stats counter instead.
     const queue        = new LinkedQueue();
     let mySessionId    = null; // stable per-device id, persisted in localStorage
