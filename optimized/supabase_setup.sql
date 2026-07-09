@@ -63,12 +63,12 @@ create trigger on_queue_entry_insert
 
 -- 4. RPC: lets a device look up ONLY its own ticket/position, never anyone else's row
 create or replace function get_my_status(p_session_id text)
-returns table(ticket bigint, position bigint)
+returns table(ticket bigint, queue_position bigint)
 language sql
 security definer
 set search_path = public
 as $$
-  select id as ticket, rank as position from (
+  select id as ticket, rank as queue_position from (
     select id, session_id, row_number() over (order by id) as rank
     from queue_entries
   ) ranked

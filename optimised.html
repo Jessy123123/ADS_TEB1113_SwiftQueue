@@ -500,7 +500,7 @@
         return;
       }
       if (mine && mine.length) {
-        applyMyStatus(mine[0].ticket, mine[0].position);
+        applyMyStatus(mine[0].ticket, mine[0].queue_position);
         document.getElementById('statusText').textContent = 'Session restored from server, position locked';
         goTo(2);
       }
@@ -543,8 +543,8 @@
         log('Joined, but could not confirm your position: ' + (statusError ? statusError.message : 'not found'), 'info');
         return;
       }
-      applyMyStatus(mine[0].ticket, mine[0].position);
-      log('You joined, ticket #' + mine[0].ticket + ', position ' + mine[0].position, 'ok');
+      applyMyStatus(mine[0].ticket, mine[0].queue_position);
+      log('You joined, ticket #' + mine[0].ticket + ', position ' + mine[0].queue_position, 'ok');
     }
 
     function simRefresh() {
@@ -590,7 +590,7 @@
           addLog('Could not confirm position: ' + (error ? error.message : 'not found'), 'info', 0);
           return;
         }
-        const found = mine[0].position;
+        const found = mine[0].queue_position;
         myPosition = found;
         numEl.textContent = '#' + String(found).padStart(3, '0');
         noteEl.style.display = 'block';
