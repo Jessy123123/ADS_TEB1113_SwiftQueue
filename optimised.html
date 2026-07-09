@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
       *, ::before, ::after { box-sizing: border-box; }
       body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #FFFFFF; overflow: hidden; }
@@ -266,6 +267,7 @@
           <div class="status-text" id="statusText">Press Add User to enter the queue</div>
         </div>
         <div class="queue-id" id="queueId">Queue ID: pending</div>
+        <div class="queue-id" id="totalInQueue">Total people in queue: 0</div>
       </div>
 
       <div class="sim-panel">
@@ -274,10 +276,13 @@
         <div class="sim-log" id="simLog">
           <div class="log-entry info">Press Add User to start the simulation...</div>
         </div>
+        <input id="nameInput" type="text" placeholder="Your name (optional)"
+          style="border:1px solid #E5E7EB;border-radius:8px;padding:10px 12px;font-size:14px;font-family:Inter,system-ui,sans-serif;" />
         <div class="sim-buttons">
-          <button class="btn-sim btn-join" id="btnJoin" onclick="simJoin()">Add User to Queue</button>
+          <button class="btn-sim btn-join" id="btnJoin" onclick="simJoin()">Join the Real Queue</button>
           <button class="btn-sim btn-refresh-sim" id="btnRefresh" onclick="simRefresh()" disabled>Simulate Page Refresh</button>
           <button class="btn-sim btn-continue" id="btnContinue" onclick="goTo(3)">Continue to Next Screen</button>
+          <button class="btn-sim" style="background:#FEE2E2;color:#DC2626;" onclick="resetDemo()">Reset Demo</button>
         </div>
         <div class="sim-note" id="simNote">Add at least 3 users, then simulate a refresh to see your position preserved.</div>
       </div>
@@ -394,9 +399,9 @@
         this._size    = startCount;
         this._counter = startCount;
       }
-      enqueue(sessionId) {
-        this._counter++;
-        const node = new Node(sessionId, this._counter);
+      // O(1) - append this device's own node once it has joined the real queue
+      appendOne(row) {
+        const node = new Node(row.session_id, row.id);
         if (this._rear === null) {
           this._front = node;
           this._rear  = node;
@@ -405,14 +410,15 @@
           this._rear      = node;
         }
         this._size++;
+        this._counter = row.id;
         return node.ticketNumber;
       }
       getSize() { return this._size; }
-      findPosition(sessionId) { //keep looping to find the sessionId that matches 
+      findPosition(sessionId) { //keep looping to find the sessionId that matches
         // same concept as in the queue, just this is using linkedlist as the data type
         let pos = 1, current = this._front;
         while (current !== null) {
-          if (current.sessionId === sessionId) 
+          if (current.sessionId === sessionId)
           return pos;
           current = current.next;
           pos++;
@@ -421,13 +427,84 @@
       }
     }
 
-    // declaration and assign 
-    const queue     = new LinkedQueue();
-    const names     = ['Alice','Bob','Eavan','Sarah','James','Mia','Liam','Zara','Ryan','Nora'];
-    let nameIdx     = 0; //declare and assign
-    let mySessionId = null;
-    let myPosition  = null;
-    let refreshDone = false;
+    // Supabase setup
+    const SUPABASE_URL             = 'https://tldlxembkpblnfpmxlpj.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_e4e6ey2HhkN3tHDQFJocIQ_g1DPeqrI';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    // declaration and assign
+    // this local queue only ever holds THIS device's own node (privacy:
+    // no anon client can ever read anyone else's name/session id, see
+    // optimized/supabase_setup.sql). the live total across every device
+    // comes from the anonymized queue_stats counter instead.
+    const queue        = new LinkedQueue();
+    let mySessionId    = null; // stable per-device id, persisted in localStorage
+    let myPosition     = null;
+    let myTicketNumber = null;
+    let refreshDone    = false;
+
+    function getOrCreateDeviceSessionId() {
+      let sid = localStorage.getItem('sq_device_id');
+      if (!sid) {
+        sid = crypto.randomUUID();
+        localStorage.setItem('sq_device_id', sid);
+      }
+      return sid;
+    }
+
+    // total is the anonymized, everyone-including-you count from queue_stats
+    function updateAggregateUI(total) {
+      document.getElementById('totalInQueue').textContent = 'Total people in queue: ' + total;
+      const pct = Math.min(80, Math.round((total / (total + 6)) * 100));
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('waitLabel').textContent = 'Estimated wait: ' + (total * 2) + ' minutes';
+    }
+
+    // applies OUR OWN ticket/position, fetched only through the locked-down RPC
+    function applyMyStatus(ticket, position) {
+      queue.appendOne({ session_id: mySessionId, id: ticket });
+      myTicketNumber = ticket;
+      myPosition     = position;
+      document.getElementById('yourNumber').textContent  = '#' + String(ticket).padStart(3, '0');
+      document.getElementById('queueId').textContent    = 'Queue ID: TM-OPT-' + mySessionId.slice(0, 8).toUpperCase();
+      document.getElementById('statusText').textContent = 'You are in the queue, position live-synced from server';
+      document.getElementById('btnJoin').disabled = true;
+      document.getElementById('btnRefresh').disabled = false;
+      document.getElementById('simNote').textContent = 'Ask others to open this page on their own device and join too, watch the total update live.';
+    }
+
+    // queue_stats only ever contains a single anonymous integer, no names/ids
+    function subscribeRealtime() {
+      sb.channel('queue_stats_changes')
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'queue_stats' }, (payload) => {
+          updateAggregateUI(payload.new.total);
+          log('Someone joined the queue. Total in queue: ' + payload.new.total, 'join');
+        })
+        .subscribe();
+    }
+
+    // on load: read the anonymous total, then privately check our own status via RPC
+    async function loadInitialQueueState() {
+      mySessionId = getOrCreateDeviceSessionId();
+
+      const { data: stats, error: statsError } = await sb.from('queue_stats').select('total').eq('id', 1).single();
+      if (statsError) {
+        log('Could not load queue stats: ' + statsError.message, 'info');
+      } else {
+        updateAggregateUI(stats.total);
+      }
+
+      const { data: mine, error: statusError } = await sb.rpc('get_my_status', { p_session_id: mySessionId });
+      if (statusError) {
+        log('Could not check session status: ' + statusError.message, 'info');
+        return;
+      }
+      if (mine && mine.length) {
+        applyMyStatus(mine[0].ticket, mine[0].position);
+        document.getElementById('statusText').textContent = 'Session restored from server, position locked';
+        goTo(2);
+      }
+    }
 
     //function that writes line on the screen
     function log(msg, type) {
@@ -443,53 +520,31 @@
       box.scrollTop = box.scrollHeight;
     }
 
-    // runs every time when we add user to the queue
-    function simJoin() {
-      // current counter >= the number of elements in the array
-      if (nameIdx >= names.length) { 
-        log('Queue full for this demo.', 'info'); 
-        return; 
+    // runs when this device joins the real, server-backed queue
+    async function simJoin() {
+      if (mySessionId && myTicketNumber !== null) {
+        log('You are already in the queue.', 'info');
+        return;
       }
+      const nameInput = document.getElementById('nameInput');
+      const name = (nameInput.value || '').trim() || ('Guest' + Math.floor(Math.random() * 1000));
 
-      // get the current name from the counter value
-      const name      = names[nameIdx++];
-      // put the name just now here 
-      const sessionId = 'sess_' + name.toLowerCase();
-      // enqueue inside the queue
-      const ticket    = queue.enqueue(sessionId);
-      // use the findposition to find back the user position
-      const pos       = queue.findPosition(sessionId);
-
-      if (mySessionId === null) {
-        // check if it is at the top
-        // assume you are the first one
-        mySessionId = sessionId;
-        myPosition  = pos;
-        // save the value into global variable
-        // #001
-        // just some formats
-        document.getElementById('yourNumber').textContent  = '#' + String(ticket).padStart(3, '0');
-        document.getElementById('queueId').textContent    = 'Queue ID: TM-OPT-' + sessionId.toUpperCase();
-        document.getElementById('statusText').textContent = 'You are in the queue position locked by session';
-        log('YOU joined as ' + name + ' ticket #' + ticket + ', position ' + pos, 'ok');
-      } else {
-        log(name + ' joined ticket #' + ticket + ', position ' + pos, 'join');
+      document.getElementById('btnJoin').disabled = true;
+      const { error } = await sb.from('queue_entries').insert({ session_id: mySessionId, name });
+      if (error) {
+        log('Error joining queue: ' + error.message, 'info');
+        document.getElementById('btnJoin').disabled = false;
+        return;
       }
-
-      // the progression bar
-      const pct = Math.min(80, Math.round((pos / (pos + 6)) * 100));
-      // 6 is the fraction grows 
-      // cap it at the 80
-      // never full first
-      document.getElementById('progressFill').style.width = pct + '%';
-      document.getElementById('waitLabel').textContent = 'Estimated wait: ' + (pos * 2) + ' minutes';
-      // assume 2 minutes per person
-
-      if (queue.getSize() >= 3) {
-        document.getElementById('btnRefresh').disabled = false;
-        // set or reset it to false, so that can be clicked to true later
-        document.getElementById('simNote').textContent = 'Click Simulate Page Refresh to see your position is preserved.';
+      // the anonymous total updates for everyone via the queue_stats realtime subscription,
+      // but our own ticket/position is only ever readable by us, through this RPC
+      const { data: mine, error: statusError } = await sb.rpc('get_my_status', { p_session_id: mySessionId });
+      if (statusError || !mine || !mine.length) {
+        log('Joined, but could not confirm your position: ' + (statusError ? statusError.message : 'not found'), 'info');
+        return;
       }
+      applyMyStatus(mine[0].ticket, mine[0].position);
+      log('You joined, ticket #' + mine[0].ticket + ', position ' + mine[0].position, 'ok');
     }
 
     function simRefresh() {
@@ -524,15 +579,18 @@
         }, delay);
       }
 
-      // 200, 700, .... are the speed to be appeared
       addLog('Browser refresh triggered...', 'refresh', 200);
       addLog('Session identity detected: ' + mySessionId, 'info', 700);
-      addLog('find_position("' + mySessionId + '") scanning linked list...', 'info', 1200);
+      addLog('get_my_status("' + mySessionId + '") re-querying server...', 'info', 1200);
       addLog('Scanning node 1... node 2... node 3...', 'info', 1800);
-      setTimeout(() => {
-        // call the find position function now 
-        const found = queue.findPosition(mySessionId);
-        // return the position integer
+      setTimeout(async () => {
+        // re-derive position from the server, the real source of truth
+        const { data: mine, error } = await sb.rpc('get_my_status', { p_session_id: mySessionId });
+        if (error || !mine || !mine.length) {
+          addLog('Could not confirm position: ' + (error ? error.message : 'not found'), 'info', 0);
+          return;
+        }
+        const found = mine[0].position;
         myPosition = found;
         numEl.textContent = '#' + String(found).padStart(3, '0');
         noteEl.style.display = 'block';
@@ -603,6 +661,13 @@
       }, 1000);
     }
 
+    function resetDemo() {
+      localStorage.removeItem('sq_device_id');
+      location.reload();
+    }
+
+    subscribeRealtime();
+    loadInitialQueueState();
   </script>
   </body>
 </html>
