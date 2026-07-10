@@ -1,370 +1,491 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ticketmaster - Select Your Seats (Baseline)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      *, ::before, ::after { box-sizing: border-box; }
+      body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #FFFFFF; overflow: hidden; }
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>ticketmaster - Select Your Seats</title>
-<!-- Material Symbols -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<!-- Google Fonts: Sora & Inter -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Sora:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          "colors": {
-            "inverse-on-surface": "#edf0ff",
-            "surface-bright": "#f9f9ff",
-            "secondary": "#5444d3",
-            "surface": "#f9f9ff",
-            "on-secondary-fixed-variant": "#3e29bd",
-            "inverse-primary": "#b5c4ff",
-            "tertiary": "#852b00",
-            "on-surface-variant": "#434654",
-            "background": "#f9f9ff",
-            "on-secondary-container": "#fffbff",
-            "surface-container": "#e9edff",
-            "error-container": "#ffdad6",
-            "on-primary": "#ffffff",
-            "on-tertiary-container": "#ffd4c5",
-            "primary-fixed-dim": "#b5c4ff",
-            "secondary-container": "#6d5fed",
-            "on-primary-fixed-variant": "#003dab",
-            "inverse-surface": "#293040",
-            "on-background": "#141b2b",
-            "on-secondary": "#ffffff",
-            "outline": "#737686",
-            "on-tertiary-fixed-variant": "#802a00",
-            "error": "#ba1a1a",
-            "on-tertiary-fixed": "#380d00",
-            "on-error-container": "#93000a",
-            "secondary-fixed-dim": "#c5c0ff",
-            "tertiary-fixed": "#ffdbcf",
-            "primary": "#003fb1",
-            "surface-container-highest": "#dce2f7",
-            "tertiary-fixed-dim": "#ffb59a",
-            "on-error": "#ffffff",
-            "outline-variant": "#c3c5d7",
-            "on-surface": "#141b2b",
-            "on-secondary-fixed": "#150067",
-            "on-primary-container": "#d4dcff",
-            "surface-container-low": "#f1f3ff",
-            "secondary-fixed": "#e4dfff",
-            "surface-container-lowest": "#ffffff",
-            "surface-container-high": "#e1e8fd",
-            "surface-dim": "#d3daef",
-            "on-tertiary": "#ffffff",
-            "tertiary-container": "#ad3b00",
-            "primary-fixed": "#dbe1ff",
-            "on-primary-fixed": "#00174d",
-            "surface-tint": "#1353d8",
-            "primary-container": "#1a56db",
-            "surface-variant": "#dce2f7",
-            "warm-white": "#FAFAF8"
-          },
-          "borderRadius": {
-            "DEFAULT": "0.25rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          },
-          "spacing": {
-            "stack-sm": "8px",
-            "unit": "4px",
-            "stack-md": "16px",
-            "gutter": "24px",
-            "margin-desktop": "48px",
-            "stack-lg": "32px",
-            "container-max": "1280px",
-            "margin-mobile": "20px"
-          },
-          "fontFamily": {
-            "title-lg": ["Sora"],
-            "body-md": ["Inter"],
-            "label-md": ["Inter"],
-            "caption": ["Inter"],
-            "display-lg": ["Sora"],
-            "headline-md": ["Sora"],
-            "body-lg": ["Inter"]
-          },
-          "fontSize": {
-            "title-lg": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
-            "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
-            "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "500"}],
-            "caption": ["12px", {"lineHeight": "1", "fontWeight": "400"}],
-            "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-            "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
-            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
-          }
-        },
-      },
+      .screen { display: none; width: 1440px; height: 900px; margin: 0 auto; position: relative; overflow: hidden; }
+      .screen.active { display: block; }
+
+      .logo { color: #0067F4; font-size: 36px; font-weight: 700; }
+      .divider { background: #E5E7EB; height: 1px; width: 100%; flex-shrink: 0; }
+
+      .seat-top-bar {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 40px; height: 64px; border-bottom: 1px solid #E5E7EB;
+      }
+      .seat-body { display: flex; height: calc(900px - 64px); }
+
+      /* MAP SCREEN */
+      .map-panel {
+        flex: 1; display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 20px; padding: 28px 48px; background: #F8F9FA;
+      }
+      .map-title { color: #1A1A1A; font-size: 30px; font-weight: 700; align-self: flex-start; }
+      .stadium { position: relative; width: 580px; height: 400px; border-radius: 16px; flex-shrink: 0; }
+      .seat-section {
+        position: absolute; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: transform 0.1s, filter 0.1s;
+        color: #FFFFFF; font-size: 15px; font-weight: 600;
+      }
+      .seat-section:hover { transform: scale(1.04); filter: brightness(1.1); }
+      .vip { background: rgba(123,47,190,0.85); width:220px; height:52px; left:180px; top:16px; }
+      .a-l { background: rgba(0,103,244,0.85);  width:148px; height:72px; left:52px;  top:88px; }
+      .a-c { background: rgba(0,103,244,0.85);  width:148px; height:80px; left:216px; top:80px; }
+      .a-r { background: rgba(0,103,244,0.85);  width:148px; height:72px; left:380px; top:88px; }
+      .b-l { background: rgba(34,197,94,0.85);  width:128px; height:72px; left:16px;  top:180px; }
+      .b-c { background: rgba(34,197,94,0.85);  width:256px; height:72px; left:162px; top:180px; }
+      .b-r { background: rgba(34,197,94,0.85);  width:128px; height:72px; left:436px; top:180px; }
+      .c-l { background: rgba(245,158,11,0.85); width:148px; height:64px; left:0px;   top:272px; }
+      .c-c { background: rgba(245,158,11,0.85); width:256px; height:64px; left:162px; top:272px; }
+      .c-r { background: rgba(245,158,11,0.85); width:148px; height:64px; left:432px; top:272px; }
+      .stage { background: #1A1A1A; width:256px; height:32px; left:162px; top:356px; border-radius:8px 8px 0 0; cursor:default; }
+      .legend { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+      .legend-item { display: flex; align-items: center; gap: 6px; color: #6B7280; font-size: 15px; }
+      .legend-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+      .avail-tag { display: flex; align-items: center; gap: 8px; background: #EEF2FF; border-radius: 20px; padding: 8px 18px; }
+      .avail-dot { width: 10px; height: 10px; border-radius: 50%; background: #0067F4; }
+      .avail-text { color: #0067F4; font-size: 15px; font-weight: 500; }
+
+      .seat-sidebar {
+        width: 420px; flex-shrink: 0; border-left: 1px solid #E5E7EB;
+        display: flex; flex-direction: column; gap: 16px; padding: 24px 28px; overflow-y: auto;
+      }
+      .sidebar-event-title { color: #1A1A1A; font-size: 22px; font-weight: 700; line-height: 1.3; }
+      .sidebar-event-date  { color: #6B7280; font-size: 16px; margin-top: -6px; }
+      .selection-title { color: #1A1A1A; font-size: 18px; font-weight: 600; }
+      .selection-empty { color: #9CA3AF; font-size: 15px; }
+      .price-summary-title { color: #1A1A1A; font-size: 18px; font-weight: 600; }
+      .price-row-item { display: flex; justify-content: space-between; color: #6B7280; font-size: 16px; }
+      .price-row-item span:last-child { color: #1A1A1A; }
+      .price-total { display: flex; justify-content: space-between; color: #1A1A1A; font-size: 18px; font-weight: 700; }
+      .spacer { flex: 1; }
+      .btn-checkout {
+        background: #0067F4; color: #FFFFFF; border: none; cursor: pointer;
+        border-radius: 10px; padding: 14px 0; font-size: 18px; font-weight: 600;
+        font-family: Inter, system-ui, sans-serif; width: 100%; transition: opacity 0.15s;
+      }
+      .btn-checkout:hover { opacity: 0.88; }
+
+      /* GRID SCREEN */
+      .s5-grid-panel {
+        flex: 1; display: flex; flex-direction: column; align-items: center;
+        gap: 20px; padding: 28px 48px; background: #F8F9FA; overflow-y: auto;
+      }
+      .s5-back { background: none; border: 1px solid #E5E7EB; border-radius: 8px; padding: 8px 16px;
+        font-size: 14px; color: #1A1A1A; cursor: pointer; align-self: flex-start; font-family: Inter, system-ui, sans-serif; }
+      .s5-search-row { display: flex; gap: 8px; width: 100%; max-width: 440px; }
+      .s5-search-row input { flex: 1; border: 1px solid #E5E7EB; border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: Inter, system-ui, sans-serif; }
+      .s5-search-row button { border: none; background: #0067F4; color: #fff; border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Inter, system-ui, sans-serif; }
+      .s5-search-result { font-size: 13px; font-family: 'Courier New', monospace; color: #1A1A1A; min-height: 40px; white-space: pre-line; }
+      .seat-grid { display: flex; flex-direction: column; gap: 12px; }
+      .seat-grid-row { display: flex; align-items: center; gap: 12px; }
+      .seat-row-label { width: 24px; color: #6B7280; font-size: 15px; font-weight: 700; }
+      .seat-cell {
+        width: 46px; height: 46px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+        font-size: 15px; font-weight: 700; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s, filter 0.1s;
+        color: #FFFFFF;
+      }
+      .seat-cell.available:hover { transform: scale(1.08); filter: brightness(1.12); }
+      .seat-cell.section-vip.available { background: #7B2FBE; }
+      .seat-cell.section-a.available   { background: #0067F4; }
+      .seat-cell.section-b.available   { background: #22C55E; }
+      .seat-cell.section-c.available   { background: #F59E0B; }
+      .seat-cell.booked { background: #E5E7EB; color: #9CA3AF; cursor: not-allowed; }
+      .seat-cell.highlight { border-color: #1A1A1A; transform: scale(1.08); }
+      .s5-seat-info {
+        width: 100%; background: #F0F5FF; border: 1px solid #C7D9FF; border-radius: 10px;
+        padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      }
+      .s5-seat-info-text { font-size: 15px; color: #1A1A1A; }
+      .s5-seat-info-text b { color: #0067F4; }
+      .s5-book-btn {
+        background: #0067F4; color: #fff; border: none; border-radius: 8px; padding: 10px 20px;
+        font-size: 14px; font-weight: 600; cursor: pointer; font-family: Inter, system-ui, sans-serif; white-space: nowrap;
+      }
+      .s5-sidebar {
+        width: 380px; flex-shrink: 0; border-left: 1px solid #E5E7EB;
+        display: flex; flex-direction: column; gap: 12px; padding: 24px 28px; overflow-y: auto;
+      }
+      .sim-log {
+        height: 320px; flex-shrink: 0; background: #FFF; border-radius: 8px; border: 1px solid #E5E7EB;
+        padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;
+        font-size: 13px; font-family: 'Courier New', monospace;
+      }
+      .log-entry { padding: 3px 0; border-bottom: 1px solid #E5E7EB; line-height: 1.5; }
+      .log-entry.info { color: #DC2626; font-weight: 600; }
+      .log-entry.ok { color: #6B7280; }
+
+      #toast {
+        display: none; position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+        background: #16A34A; color: #FFFFFF; border-radius: 8px;
+        padding: 14px 28px; font-size: 18px; font-weight: 600; z-index: 999;
+      }
+    </style>
+  </head>
+  <body data-page="seat-selection">
+
+  <!-- MAP SCREEN: click a stadium section -->
+  <div id="mapScreen" class="screen active">
+    <div class="seat-top-bar">
+      <div class="logo">ticketmaster</div>
+      <div style="color:#6B7280;font-size:15px;">Taylor Swift | The Eras Tour Seat Selection &mdash; Baseline</div>
+    </div>
+    <div class="seat-body">
+      <div class="map-panel">
+        <div class="map-title">Select Your Seats</div>
+        <div class="stadium">
+          <div class="seat-section vip" onclick="openSection('VIP','VIP Floor')">VIP FLOOR</div>
+          <div class="seat-section a-l" onclick="openSection('A','Section A')">A LEFT</div>
+          <div class="seat-section a-c" onclick="openSection('A','Section A')">A CENTER</div>
+          <div class="seat-section a-r" onclick="openSection('A','Section A')">A RIGHT</div>
+          <div class="seat-section b-l" onclick="openSection('B','Section B')">B LEFT</div>
+          <div class="seat-section b-c" onclick="openSection('B','Section B')">B CENTER</div>
+          <div class="seat-section b-r" onclick="openSection('B','Section B')">B RIGHT</div>
+          <div class="seat-section c-l" onclick="openSection('C','Section C')">C LEFT</div>
+          <div class="seat-section c-c" onclick="openSection('C','Section C')">C CENTER</div>
+          <div class="seat-section c-r" onclick="openSection('C','Section C')">C RIGHT</div>
+          <div class="seat-section stage">STAGE</div>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#7B2FBE;"></div>VIP Floor $450+</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#0067F4;"></div>Section A $250</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#22C55E;"></div>Section B $150</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#F59E0B;"></div>Section C $85</div>
+        </div>
+        <div class="avail-tag">
+          <div class="avail-dot"></div>
+          <div class="avail-text" id="globalAvailText">Loading seats...</div>
+        </div>
+      </div>
+
+      <div class="seat-sidebar">
+        <div class="sidebar-event-title">Taylor Swift | The Eras Tour</div>
+        <div class="sidebar-event-date">Sat, Jun 28 &middot; 7:00 PM &middot; MetLife Stadium</div>
+        <div class="divider"></div>
+        <div>
+          <div class="selection-title">Your Selection</div>
+          <div class="selection-empty" id="selectionInfo" style="margin-top:6px;">Click a section on the map to choose a seat</div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div class="price-summary-title">Price Summary</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
+            <div class="price-row-item"><span id="ticketLabel">Ticket (1x)</span><span id="ticketPrice">$0.00</span></div>
+            <div class="price-row-item"><span>Service Fee</span><span id="serviceFee">$0.00</span></div>
+            <div class="price-row-item"><span>Facility Fee</span><span>$12.00</span></div>
+            <div class="divider"></div>
+            <div class="price-total"><span>Total</span><span id="totalPrice">$0.00</span></div>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn-checkout" id="checkout-btn">Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID SCREEN: linear search over the seats in the clicked section -->
+  <div id="gridScreen" class="screen">
+    <div class="seat-top-bar">
+      <div class="logo">ticketmaster</div>
+      <div style="color:#6B7280;font-size:15px;" id="gridSectionTitle">Section</div>
+    </div>
+    <div class="seat-body">
+      <div class="s5-grid-panel">
+        <button class="s5-back" onclick="goTo('map')">Back to sections</button>
+        <div class="s5-search-row">
+          <input id="seatSearchInput" placeholder="Find seat, e.g. C7" />
+          <button onclick="runSeatSearch()">Search</button>
+        </div>
+        <div class="s5-search-result" id="s5SearchResult"></div>
+        <div class="s5-seat-info" id="s5SeatInfo" style="display:none;"></div>
+        <div class="seat-grid" id="seatGrid"></div>
+      </div>
+      <div class="s5-sidebar">
+        <div class="sidebar-event-title">Choose a seat</div>
+        <div class="sidebar-event-date" id="sectionAvailCount">Loading seats...</div>
+        <div class="divider"></div>
+        <div class="selection-title">Baseline: Unsorted Array + Linear Search</div>
+        <div class="selection-empty" style="margin-top:-6px;">
+          Every lookup scans the full unsorted array element by element. Type a seat above,
+          or click a cell, to see how many comparisons it costs.
+        </div>
+        <div class="sim-log" id="baselineLog"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast">Order placed! Enjoy the show.</div>
+
+  <script>
+    function goTo(name) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(name + 'Screen').classList.add('active');
     }
-  </script>
-<style>
-    body { background-color: #FAFAF8; }
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+
+    const SUPABASE_URL             = 'https://tldlxembkpblnfpmxlpj.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_e4e6ey2HhkN3tHDQFJocIQ_g1DPeqrI';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    // ---- Baseline data structure: ONE flat, unsorted array holding every
+    // seat in the venue. No sorting, no per-section grouping, no index of
+    // any kind. Loaded once, in whatever order the database happens to
+    // return it in. ----
+    let allSeats         = [];
+    let currentSection   = null;
+    let currentMatches   = [];
+    let selectedSeat     = null;
+
+    // O(n) - scanning many small "runs" back to back and averaging is the
+    // standard way to time an operation that individually takes a fraction
+    // of a millisecond (200 seats is too few for one lookup to register).
+    function timeOp(fn, iterations) {
+      const start = performance.now();
+      let result;
+      for (let i = 0; i < iterations; i++) result = fn();
+      const totalMs = performance.now() - start;
+      return { result, totalMs, avgMs: totalMs / iterations };
     }
-    .seat-section {
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
+
+    // Step 2 (Displaying a Section): the array has no grouping by section,
+    // so the ONLY way to answer "what's in Court 1 / Section A" is to walk
+    // every single element in the venue and test it. O(n) over the WHOLE
+    // venue, not just the section being shown.
+    function scanForSection(section) {
+      let comparisons = 0;
+      const matches = [];
+      for (const seat of allSeats) {
+        comparisons++;
+        if (seat.section === section) matches.push(seat);
+      }
+      return { matches, comparisons };
     }
-    .seat-section:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.05);
-    }
-    .seat-section:active {
-      transform: scale(0.98);
-    }
-    .glass-nav {
-      backdrop-filter: blur(20px);
-      background: rgba(255, 255, 255, 0.85);
-    }
-    .custom-shadow {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-    }
-    @keyframes pulse-ring {
-      0% { transform: scale(0.33); opacity: 0.8; }
-      80%, 100% { opacity: 0; }
-    }
-    .pulse-dot::before {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-color: #10B981;
-      border-radius: 50%;
-      animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
-    }
-  </style>
-</head>
-<body class="font-body-md text-on-surface antialiased" data-page="seat-selection">
-<!-- TopNavBar (Derived from JSON) -->
-<header class="fixed top-0 w-full z-50 glass-nav border-b border-outline-variant/30 shadow-sm h-20">
-<div class="max-w-container-max mx-auto px-margin-desktop h-full flex items-center justify-between">
-<div class="flex items-center gap-stack-lg">
-<a class="font-display-lg text-display-lg tracking-tighter text-primary" href="event-detail.html">ticketmaster</a>
-<!-- Progress Tracker (Custom for Checkout Flow) -->
-<nav class="hidden md:flex items-center gap-stack-lg ml-margin-desktop">
-<div class="flex items-center gap-unit">
-<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-[10px]">
-<span class="material-symbols-outlined !text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
-</div>
-<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="event-detail.html">Event Details</a>
-</div>
-<div class="w-12 h-[2px] bg-primary"></div>
-<div class="flex items-center gap-unit">
-<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-[10px] font-bold">2</div>
-<span class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1">Seat Selection</span>
-</div>
-<div class="w-12 h-[2px] bg-outline-variant"></div>
-<div class="flex items-center gap-unit opacity-40">
-<div class="w-6 h-6 rounded-full border border-outline-variant flex items-center justify-center text-[10px]">3</div>
-<span class="font-label-md text-label-md text-on-surface-variant">Checkout</span>
-</div>
-</nav>
-</div>
-<div class="flex items-center gap-stack-md">
-<button class="p-2 text-on-surface-variant hover:text-primary transition-all duration-200 active:scale-95">
-<span class="material-symbols-outlined">search</span>
-</button>
-<button class="p-2 text-on-surface-variant hover:text-primary transition-all duration-200 active:scale-95">
-<span class="material-symbols-outlined">account_circle</span>
-</button>
-</div>
-</div>
-</header>
-<main class="pt-32 pb-margin-desktop max-w-container-max mx-auto px-margin-desktop min-h-screen">
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
-<!-- Seat Selection Canvas -->
-<div class="lg:col-span-8">
-<div class="flex justify-between items-end mb-stack-lg">
-<div>
-<h1 class="font-headline-md text-headline-md text-on-background">Select Your Seats</h1>
-<p class="font-body-md text-body-md text-on-surface-variant mt-unit">Interactive Venue Map: Taylor Swift | The Eras Tour</p>
-</div>
-<div class="flex items-center gap-unit bg-surface-container-low px-stack-md py-stack-sm rounded-full border border-outline-variant/30">
-<div class="relative w-2 h-2 rounded-full bg-[#10B981] pulse-dot"></div>
-<span class="font-label-md text-label-md text-on-surface-variant">1,247 Available Seats</span>
-</div>
-</div>
-<!-- Venue Map Canvas -->
-<div class="bg-white rounded-[16px] custom-shadow p-stack-lg border border-outline-variant/20 flex flex-col items-center">
-<div class="w-full max-w-[600px] aspect-[4/3] relative flex flex-col items-center gap-unit">
-<!-- Stage -->
-<div class="w-1/2 h-16 bg-inverse-surface rounded-lg flex items-center justify-center text-white font-title-lg text-title-lg tracking-widest mb-stack-lg select-none">
-              STAGE
-            </div>
-<!-- Sections Layered (Bento Grid Layout) -->
-<div class="w-full grid grid-cols-3 gap-unit mb-unit">
-<!-- Row C (Back) -->
-<div class="seat-section h-24 bg-[#FFB59A] rounded-xl flex items-center justify-center text-center p-stack-sm border border-black/5">
-<span class="font-label-md text-label-md text-[#380d00]">Section C<br/>Left</span>
-</div>
-<div class="seat-section h-24 bg-[#FFB59A] rounded-xl flex items-center justify-center text-center p-stack-sm border border-black/5">
-<span class="font-label-md text-label-md text-[#380d00]">Section C<br/>Center</span>
-</div>
-<div class="seat-section h-24 bg-[#FFB59A] rounded-xl flex items-center justify-center text-center p-stack-sm border border-black/5">
-<span class="font-label-md text-label-md text-[#380d00]">Section C<br/>Right</span>
-</div>
-<!-- Row B (Middle) -->
-<div class="seat-section h-24 bg-[#10B981]/20 rounded-xl flex items-center justify-center text-center p-stack-sm border border-[#10B981]/30">
-<span class="font-label-md text-label-md text-[#10B981]">Section B<br/>Left</span>
-</div>
-<div class="seat-section h-24 bg-[#10B981]/20 rounded-xl flex items-center justify-center text-center p-stack-sm border border-[#10B981]/30">
-<span class="font-label-md text-label-md text-[#10B981]">Section B<br/>Center</span>
-</div>
-<div class="seat-section h-24 bg-[#10B981]/20 rounded-xl flex items-center justify-center text-center p-stack-sm border border-[#10B981]/30">
-<span class="font-label-md text-label-md text-[#10B981]">Section B<br/>Right</span>
-</div>
-<!-- Row A (Front) -->
-<div class="seat-section h-24 bg-primary/10 rounded-xl flex items-center justify-center text-center p-stack-sm border border-primary/20">
-<span class="font-label-md text-label-md text-primary">Section A<br/>Left</span>
-</div>
-<div class="seat-section h-24 bg-primary/10 rounded-xl flex items-center justify-center text-center p-stack-sm border border-primary/20">
-<span class="font-label-md text-label-md text-primary">Section A<br/>Center</span>
-</div>
-<div class="seat-section h-24 bg-primary/10 rounded-xl flex items-center justify-center text-center p-stack-sm border border-primary/20">
-<span class="font-label-md text-label-md text-primary">Section A<br/>Right</span>
-</div>
-</div>
-<!-- VIP Floor (Asymmetric Large Block) -->
-<div class="seat-section w-full h-32 bg-secondary-fixed rounded-xl flex items-center justify-center text-center border border-secondary/20">
-<div>
-<span class="font-title-lg text-title-lg text-on-secondary-fixed block">VIP Floor</span>
-<span class="font-caption text-caption text-secondary uppercase tracking-widest mt-unit block">Front Row Experience</span>
-</div>
-</div>
-</div>
-<!-- Legend -->
-<div class="mt-stack-lg flex flex-wrap justify-center gap-stack-md w-full border-t border-outline-variant/30 pt-stack-md">
-<div class="flex items-center gap-unit">
-<div class="w-3 h-3 rounded-sm bg-secondary-fixed"></div>
-<span class="font-caption text-caption">VIP Floor — $450+</span>
-</div>
-<div class="flex items-center gap-unit">
-<div class="w-3 h-3 rounded-sm bg-primary/20 border border-primary/20"></div>
-<span class="font-caption text-caption">Section A — $250+</span>
-</div>
-<div class="flex items-center gap-unit">
-<div class="w-3 h-3 rounded-sm bg-[#10B981]/20 border border-[#10B981]/30"></div>
-<span class="font-caption text-caption">Section B — $150+</span>
-</div>
-<div class="flex items-center gap-unit">
-<div class="w-3 h-3 rounded-sm bg-[#FFB59A]"></div>
-<span class="font-caption text-caption">Section C — $85+</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Order Summary Sidebar -->
-<aside class="lg:col-span-4 sticky top-32">
-<div class="bg-white rounded-[16px] custom-shadow overflow-hidden border border-outline-variant/20">
-<!-- Event Detail Header -->
-<div class="p-stack-lg border-b border-outline-variant/10">
-<h2 class="font-title-lg text-title-lg text-on-surface mb-unit">Event Summary</h2>
-<div class="space-y-stack-sm">
-<p class="font-body-md text-body-md font-bold text-on-surface">Taylor Swift | The Eras Tour</p>
-<div class="flex items-start gap-stack-sm text-on-surface-variant">
-<span class="material-symbols-outlined !text-[18px] mt-1">calendar_today</span>
-<span class="font-caption text-caption">Sat, Jun 28 • 7:00 PM</span>
-</div>
-<div class="flex items-start gap-stack-sm text-on-surface-variant">
-<span class="material-symbols-outlined !text-[18px] mt-1">location_on</span>
-<span class="font-caption text-caption">MetLife Stadium, East Rutherford, NJ</span>
-</div>
-</div>
-</div>
-<!-- Selection State -->
-<div class="p-stack-lg bg-surface-container-low/30">
-<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-stack-md">Your Selection</h3>
-<!-- Empty State -->
-<div class="flex flex-col items-center justify-center py-stack-lg border-2 border-dashed border-outline-variant/30 rounded-xl bg-white">
-<div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center mb-stack-sm">
-<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">event_seat</span>
-</div>
-<p class="font-body-md text-body-md text-outline">No seats selected</p>
-<p class="font-caption text-caption text-outline-variant mt-unit">Tap a section to view available seats</p>
-</div>
-</div>
-<!-- Price Summary -->
-<div class="p-stack-lg space-y-stack-md">
-<div class="flex justify-between font-body-md text-body-md">
-<span class="text-on-surface-variant">Tickets (0x)</span>
-<span class="text-on-surface">$0.00</span>
-</div>
-<div class="flex justify-between font-body-md text-body-md">
-<span class="text-on-surface-variant">Service Fee</span>
-<span class="text-on-surface">$0.00</span>
-</div>
-<div class="flex justify-between font-body-md text-body-md">
-<span class="text-on-surface-variant">Facility Fee</span>
-<span class="text-on-surface">$0.00</span>
-</div>
-<div class="pt-stack-md border-t border-outline-variant/30 flex justify-between items-end">
-<span class="font-title-lg text-title-lg">Total</span>
-<span class="font-headline-md text-headline-md text-primary">$0.00</span>
-</div>
-</div>
-<!-- Action -->
-<div class="p-stack-lg pt-0">
-<button id="checkout-btn" type="button" class="w-full bg-primary-container text-on-primary py-stack-md rounded-full font-title-lg text-title-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all duration-200">
-              Proceed to Checkout
-            </button>
-<div class="flex items-center justify-center gap-unit mt-stack-md text-on-surface-variant">
-<span class="material-symbols-outlined !text-[16px]">lock</span>
-<span class="font-caption text-caption">Secure Checkout | Trustpilot 4.5/5</span>
-</div>
-</div>
-</div>
-<!-- Promo Banner -->
-<div class="mt-gutter p-stack-md bg-secondary-container rounded-xl flex gap-stack-md items-center">
-<div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-white">confirmation_number</span>
-</div>
-<div>
-<p class="font-label-md text-label-md text-white font-bold">Resale Protection</p>
-<p class="font-caption text-caption text-white/80">Every ticket is verified and 100% guaranteed.</p>
-</div>
-</div>
-</aside>
-</div>
-</main>
-<!-- Footer (Derived from JSON) -->
-<footer class="w-full py-stack-lg bg-surface-container-lowest border-t border-outline-variant/20">
-<div class="max-w-container-max mx-auto px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-stack-md">
-<div class="flex flex-col items-center md:items-start gap-unit">
-<span class="font-title-lg text-title-lg text-on-surface select-none">ticketmaster</span>
-<span class="font-caption text-caption text-on-surface-variant">© 2024 Ticketmaster. All rights reserved. Premium Event Discovery.</span>
-</div>
-<div class="flex flex-wrap justify-center gap-stack-md">
-<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms of Use</a>
-<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy Policy</a>
-<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Cookie Policy</a>
-<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Help Center</a>
-<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Sell Tickets</a>
-</div>
-</div>
-</footer>
-<script>
-    // Micro-interactions for seat sections
-    document.querySelectorAll('.seat-section').forEach(section => {
-      section.addEventListener('click', () => {
-        // Toggle active state visualization
-        const isActive = section.classList.contains('ring-4');
-        
-        // Simple logic for single selection mock-up
-        document.querySelectorAll('.seat-section').forEach(s => s.classList.remove('ring-4', 'ring-primary/40', 'z-10'));
-        
-        if (!isActive) {
-          section.classList.add('ring-4', 'ring-primary/40', 'z-10');
-          console.log("Section selected:", section.innerText.replace('\n', ' '));
+
+    // Step 3 (Searching for a Specific Seat): linear scan from index 0,
+    // stopping at the first match. Best case: 1 comparison. Worst case:
+    // every seat in the venue, if the seat is last or doesn't exist.
+    // Row/seat-number alone aren't unique venue-wide (every section repeats
+    // rows A-E, seats 1-10), so a search is always "seat X in section Y" -
+    // both fields have to match, same as a real ticketing system.
+    function linearFindSeat(section, row, number) {
+      let comparisons = 0;
+      for (const seat of allSeats) {
+        comparisons++;
+        if (seat.section === section && seat.seat_row === row && seat.seat_number === number) {
+          return { seat, comparisons };
         }
+      }
+      return { seat: null, comparisons };
+    }
+
+    function baselineLog(msg, type) {
+      const el = document.createElement('div');
+      el.className = 'log-entry ' + (type || 'ok');
+      el.textContent = msg;
+      const box = document.getElementById('baselineLog');
+      box.appendChild(el);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function sectionCssClass(section) {
+      return 'section-' + section.toLowerCase();
+    }
+
+    // Step 7: total available count is itself an O(n) scan over the whole
+    // array, recomputed on every load and every realtime update.
+    function updateGlobalAvailability() {
+      const available = allSeats.filter(s => s.status === 'available').length;
+      document.getElementById('globalAvailText').textContent =
+        available + ' of ' + allSeats.length + ' Available Seats';
+    }
+
+    async function loadAllSeats() {
+      // no filter, no order: exactly the array described in the write-up
+      const { data, error } = await sb.from('seats').select('*');
+      if (error) {
+        document.getElementById('globalAvailText').textContent = 'Could not load seats: ' + error.message;
+        return;
+      }
+      allSeats = data;
+      updateGlobalAvailability();
+      subscribeSeatsRealtime();
+    }
+
+    function subscribeSeatsRealtime() {
+      sb.channel('baseline_seats_changes')
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'seats' }, (payload) => {
+          const updated = payload.new;
+          const local = allSeats.find(s => s.id === updated.id);
+          if (local) local.status = updated.status;
+          updateGlobalAvailability();
+          if (currentSection && local && local.section === currentSection) {
+            const cell = document.getElementById('seat-' + updated.id);
+            if (cell) cell.className = 'seat-cell ' + sectionCssClass(local.section) + ' ' + updated.status;
+            renderSectionAvailCount();
+          }
+        })
+        .subscribe();
+    }
+
+    function renderSectionAvailCount() {
+      const available = currentMatches.filter(s => s.status === 'available').length;
+      document.getElementById('sectionAvailCount').textContent =
+        available + ' of ' + currentMatches.length + ' seats available';
+    }
+
+    async function openSection(section, label) {
+      currentSection = section;
+      document.getElementById('gridSectionTitle').textContent = label + ' Seat Selection';
+      document.getElementById('baselineLog').innerHTML = '';
+      document.getElementById('s5SearchResult').textContent = '';
+      document.getElementById('s5SeatInfo').style.display = 'none';
+      document.getElementById('seatGrid').innerHTML = '<div class="s5-search-result">Scanning venue...</div>';
+      goTo('grid');
+
+      if (!allSeats.length) {
+        document.getElementById('seatGrid').innerHTML = '<div class="s5-search-result">Seats still loading, try again in a moment.</div>';
+        return;
+      }
+
+      const ITERATIONS = 10000;
+      const timed = timeOp(() => scanForSection(section), ITERATIONS);
+      currentMatches = timed.result.matches;
+
+      baselineLog('Displaying ' + label + ': scanned all ' + allSeats.length +
+        ' seats in the venue, found ' + currentMatches.length + ' (' + timed.avgMs.toFixed(4) + ' ms avg)', 'info');
+
+      renderSeatGrid();
+      renderSectionAvailCount();
+    }
+
+    function renderSeatGrid() {
+      const rows = {};
+      currentMatches.forEach(s => {
+        if (!rows[s.seat_row]) rows[s.seat_row] = [];
+        rows[s.seat_row].push(s);
       });
-    });
+      const grid = document.getElementById('seatGrid');
+      grid.innerHTML = '';
+      Object.keys(rows).sort().forEach(rowLetter => {
+        const rowEl = document.createElement('div');
+        rowEl.className = 'seat-grid-row';
+        const label = document.createElement('div');
+        label.className = 'seat-row-label';
+        label.textContent = rowLetter;
+        rowEl.appendChild(label);
+        rows[rowLetter].sort((a, b) => a.seat_number - b.seat_number).forEach(seat => {
+          const cell = document.createElement('div');
+          cell.className = 'seat-cell ' + sectionCssClass(seat.section) + ' ' + seat.status;
+          cell.id = 'seat-' + seat.id;
+          cell.textContent = seat.seat_number;
+          cell.title = seat.seat_row + seat.seat_number + ' - $' + seat.price;
+          cell.onclick = () => inspectByKey(seat.seat_row, seat.seat_number);
+          rowEl.appendChild(cell);
+        });
+        grid.appendChild(rowEl);
+      });
+    }
+
+    // Steps 3 + 6 combined: locate the seat via linear search, and its
+    // availability status comes back as part of the same scan (no separate
+    // lookup needed to "check" it, baseline just reads the field it already found).
+    function inspectByKey(row, number) {
+      const ITERATIONS = 10000;
+      const timed = timeOp(() => linearFindSeat(currentSection, row, number), ITERATIONS);
+      const foundSeat = timed.result.seat;
+
+      document.querySelectorAll('.seat-cell.highlight').forEach(c => c.classList.remove('highlight'));
+
+      if (!foundSeat) {
+        document.getElementById('s5SearchResult').textContent = 'Seat ' + row + number + ' does not exist in this section.';
+        document.getElementById('s5SeatInfo').style.display = 'none';
+        baselineLog('Linear search checked all ' + allSeats.length + ' seats, ' + row + number + ' not found (' + timed.avgMs.toFixed(4) + ' ms avg)', 'info');
+        return;
+      }
+
+      const cell = document.getElementById('seat-' + foundSeat.id);
+      if (cell) cell.classList.add('highlight');
+
+      document.getElementById('s5SearchResult').textContent = '';
+      baselineLog('Linear search checked ' + timed.result.comparisons + ' seats to find ' +
+        row + number + ' (' + timed.avgMs.toFixed(4) + ' ms avg)', 'ok');
+
+      const infoBox = document.getElementById('s5SeatInfo');
+      infoBox.style.display = 'flex';
+      if (foundSeat.status === 'available') {
+        infoBox.innerHTML =
+          '<div class="s5-seat-info-text">Seat <b>' + row + number + '</b> &middot; $' + Number(foundSeat.price).toFixed(2) + '</div>' +
+          '<button class="s5-book-btn" id="bookBtn">Book This Seat</button>';
+        document.getElementById('bookBtn').onclick = () => confirmBooking(foundSeat);
+      } else {
+        infoBox.innerHTML =
+          '<div class="s5-seat-info-text">Seat <b>' + row + number + '</b> &middot; $' + Number(foundSeat.price).toFixed(2) + ' &middot; already booked</div>';
+      }
+    }
+
+    function runSeatSearch() {
+      const raw = (document.getElementById('seatSearchInput').value || '').trim().toUpperCase();
+      const match = raw.match(/^([A-E])\s*(\d{1,2})$/);
+      if (!match) {
+        document.getElementById('s5SearchResult').textContent = 'Enter a seat like C7 (row A-E, seat 1-10).';
+        document.getElementById('s5SeatInfo').style.display = 'none';
+        return;
+      }
+      inspectByKey(match[1], parseInt(match[2], 10));
+    }
+
+    // Step 4 (Booking a Seat): the seat was already located by linear
+    // search in inspectByKey; booking itself is the O(1) status flip,
+    // guarded by an atomic conditional update so two people can't book
+    // the same seat.
+    async function confirmBooking(seat) {
+      if (seat.status !== 'available') return;
+      const { data, error } = await sb.from('seats').update({ status: 'booked' })
+        .eq('id', seat.id).eq('status', 'available').select();
+      if (error) {
+        baselineLog('Booking error: ' + error.message, 'info');
+        return;
+      }
+      if (!data || data.length === 0) {
+        baselineLog('Seat ' + seat.seat_row + seat.seat_number + ' was just taken, pick another.', 'info');
+        document.getElementById('s5SeatInfo').style.display = 'none';
+        return;
+      }
+      selectedSeat = data[0];
+      seat.status = 'booked';
+      const cell = document.getElementById('seat-' + seat.id);
+      if (cell) cell.className = 'seat-cell ' + sectionCssClass(seat.section) + ' booked';
+      document.getElementById('s5SeatInfo').style.display = 'none';
+      updateGlobalAvailability();
+      renderSectionAvailCount();
+      updateCheckoutSidebarFromSeat(selectedSeat);
+      goTo('map');
+    }
+
+    function updateCheckoutSidebarFromSeat(seat) {
+      const ticket   = Number(seat.price);
+      const service  = 45.00;
+      const facility = 12.00;
+      document.getElementById('selectionInfo').textContent =
+        'Section ' + seat.section + ', Seat ' + seat.seat_row + seat.seat_number + ' - $' + ticket.toFixed(2);
+      document.getElementById('ticketLabel').textContent = 'Seat ' + seat.seat_row + seat.seat_number;
+      document.getElementById('ticketPrice').textContent = '$' + ticket.toFixed(2);
+      document.getElementById('serviceFee').textContent  = '$' + service.toFixed(2);
+      document.getElementById('totalPrice').textContent  = '$' + (ticket + service + facility).toFixed(2);
+    }
+
+    loadAllSeats();
   </script>
-<script src="baseline_approach.js"></script>
-</body></html>
+  <script src="baseline_approach.js"></script>
+  </body>
+</html>
