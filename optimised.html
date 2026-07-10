@@ -217,17 +217,31 @@
       .s5-search-row input { flex: 1; border: 1px solid #E5E7EB; border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: Inter, system-ui, sans-serif; }
       .s5-search-row button { border: none; background: #0067F4; color: #fff; border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Inter, system-ui, sans-serif; }
       .s5-search-result { font-size: 13px; font-family: 'Courier New', monospace; color: #1A1A1A; min-height: 40px; white-space: pre-line; }
-      .seat-grid { display: flex; flex-direction: column; gap: 8px; }
-      .seat-grid-row { display: flex; align-items: center; gap: 8px; }
-      .seat-row-label { width: 20px; color: #6B7280; font-size: 13px; font-weight: 600; }
+      .seat-grid { display: flex; flex-direction: column; gap: 12px; }
+      .seat-grid-row { display: flex; align-items: center; gap: 12px; }
+      .seat-row-label { width: 24px; color: #6B7280; font-size: 15px; font-weight: 700; }
       .seat-cell {
-        width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
-        font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: transform 0.1s;
+        width: 46px; height: 46px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+        font-size: 15px; font-weight: 700; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s, filter 0.1s;
+        color: #FFFFFF;
       }
-      .seat-cell.available { background: #DCFCE7; color: #16A34A; }
-      .seat-cell.available:hover { transform: scale(1.1); border-color: #16A34A; }
+      .seat-cell.available:hover { transform: scale(1.08); filter: brightness(1.12); }
+      .seat-cell.section-vip.available { background: #7B2FBE; }
+      .seat-cell.section-a.available   { background: #0067F4; }
+      .seat-cell.section-b.available   { background: #22C55E; }
+      .seat-cell.section-c.available   { background: #F59E0B; }
       .seat-cell.booked { background: #E5E7EB; color: #9CA3AF; cursor: not-allowed; }
-      .seat-cell.highlight { outline: 3px solid #0067F4; }
+      .seat-cell.highlight { border-color: #1A1A1A; transform: scale(1.08); }
+      .s5-seat-info {
+        width: 100%; background: #F0F5FF; border: 1px solid #C7D9FF; border-radius: 10px;
+        padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      }
+      .s5-seat-info-text { font-size: 15px; color: #1A1A1A; }
+      .s5-seat-info-text b { color: #0067F4; }
+      .s5-book-btn {
+        background: #0067F4; color: #fff; border: none; border-radius: 8px; padding: 10px 20px;
+        font-size: 14px; font-weight: 600; cursor: pointer; font-family: Inter, system-ui, sans-serif; white-space: nowrap;
+      }
       .s5-sidebar {
         width: 380px; flex-shrink: 0; border-left: 1px solid #E5E7EB;
         display: flex; flex-direction: column; gap: 12px; padding: 24px 28px; overflow-y: auto;
@@ -419,6 +433,7 @@
           <button onclick="runSeatSearch()">Search</button>
         </div>
         <div class="s5-search-result" id="s5SearchResult"></div>
+        <div class="s5-seat-info" id="s5SeatInfo" style="display:none;"></div>
         <div class="seat-grid" id="seatGrid"></div>
       </div>
       <div class="s5-sidebar">
@@ -725,6 +740,27 @@
       }
     }
 
+    // Inserting already-sorted data one at a time into a BST makes it
+    // degenerate into a straight chain (every new node becomes the right
+    // child of the last one), which loses the O(log n) advantage entirely
+    // and behaves exactly like linear search. Since the seats come back
+    // from the database sorted by row then number, build the tree by
+    // always inserting the middle element first instead, which guarantees
+    // a balanced tree every time.
+    function buildBalancedBST(sortedSeats) {
+      const bst = new SeatBST();
+      function insertRange(lo, hi) {
+        if (lo > hi) return;
+        const mid = Math.floor((lo + hi) / 2);
+        const seat = sortedSeats[mid];
+        bst.insert(seat._key, seat);
+        insertRange(lo, mid - 1);
+        insertRange(mid + 1, hi);
+      }
+      insertRange(0, sortedSeats.length - 1);
+      return bst;
+    }
+
     // O(n) - baseline: check every seat one by one until a match is found
     function linearSearchSeats(seatArray, key) {
       let comparisons = 0;
@@ -733,6 +769,22 @@
         if (seat._key === key) return { seat, comparisons };
       }
       return { seat: null, comparisons };
+    }
+
+    // 50 seats is too small for a single lookup to show a real time
+    // difference, so each algorithm is run many times back to back and
+    // timed as a batch, then averaged, the standard way to benchmark
+    // something that individually takes a fraction of a millisecond
+    function timeSearch(fn, iterations) {
+      const start = performance.now();
+      let result;
+      for (let i = 0; i < iterations; i++) result = fn();
+      const totalMs = performance.now() - start;
+      return { result, totalMs, avgMs: totalMs / iterations };
+    }
+
+    function sectionCssClass(section) {
+      return 'section-' + section.toLowerCase();
     }
 
     let currentSection  = null;
@@ -747,6 +799,7 @@
       document.getElementById('seatGrid').innerHTML = '<div class="s5-search-result">Loading seats...</div>';
       document.getElementById('s5AlgoLog').innerHTML = '';
       document.getElementById('s5SearchResult').textContent = '';
+      document.getElementById('s5SeatInfo').style.display = 'none';
       goTo(5);
 
       const { data, error } = await sb.from('seats').select('*').eq('section', section)
@@ -759,8 +812,7 @@
       // baseline structure: seats kept in a plain array, in whatever order they arrived
       sectionSeats = data.map(s => ({ ...s, _key: seatKey(s.seat_row, s.seat_number) }));
       // optimized structure: same seats, organized into a Binary Search Tree by key
-      sectionBST = new SeatBST();
-      sectionSeats.forEach(s => sectionBST.insert(s._key, s));
+      sectionBST = buildBalancedBST(sectionSeats);
 
       renderSeatGrid();
       subscribeSeatRealtime(section);
@@ -783,11 +835,11 @@
         rowEl.appendChild(label);
         rows[rowLetter].sort((a, b) => a.seat_number - b.seat_number).forEach(seat => {
           const cell = document.createElement('div');
-          cell.className = 'seat-cell ' + seat.status;
+          cell.className = 'seat-cell ' + sectionCssClass(seat.section) + ' ' + seat.status;
           cell.id = 'seat-' + seat.id;
           cell.textContent = seat.seat_number;
           cell.title = seat.seat_row + seat.seat_number + ' - $' + seat.price;
-          if (seat.status === 'available') cell.onclick = () => bookSeat(seat);
+          cell.onclick = () => inspectSeat(seat);
           rowEl.appendChild(cell);
         });
         grid.appendChild(rowEl);
@@ -805,9 +857,8 @@
           const local = sectionSeats.find(s => s.id === updated.id);
           if (local) local.status = updated.status;
           const cell = document.getElementById('seat-' + updated.id);
-          if (cell) {
-            cell.className = 'seat-cell ' + updated.status;
-            cell.onclick = updated.status === 'available' ? () => bookSeat(local) : null;
+          if (cell && local) {
+            cell.className = 'seat-cell ' + sectionCssClass(local.section) + ' ' + updated.status;
           }
           const available = sectionSeats.filter(s => s.status === 'available').length;
           document.getElementById('s5AvailCount').textContent = available + ' of ' + sectionSeats.length + ' seats available';
@@ -824,32 +875,64 @@
       box.scrollTop = box.scrollHeight;
     }
 
+    // shared by both the search box and clicking a seat directly: runs both
+    // algorithms 10,000 times each on THIS section's seats, times them as a
+    // batch (a single lookup is sub-millisecond, too fast to compare
+    // meaningfully on its own), and shows the seat's price + a book button
+    function inspectByKey(row, number) {
+      const key = seatKey(row, number);
+      const ITERATIONS = 10000;
+
+      const linear = timeSearch(() => linearSearchSeats(sectionSeats, key), ITERATIONS);
+      const bst    = timeSearch(() => sectionBST.search(key), ITERATIONS);
+      const foundSeat = linear.result.seat;
+
+      document.querySelectorAll('.seat-cell.highlight').forEach(c => c.classList.remove('highlight'));
+
+      if (!foundSeat) {
+        document.getElementById('s5SearchResult').textContent = 'Seat ' + row + number + ' does not exist in this section.';
+        document.getElementById('s5SeatInfo').style.display = 'none';
+        return;
+      }
+
+      const cell = document.getElementById('seat-' + foundSeat.id);
+      if (cell) cell.classList.add('highlight');
+
+      document.getElementById('s5SearchResult').textContent = '';
+      algoLog('Baseline linear search checked ' + linear.result.comparisons + ' seats to find ' +
+        row + number + ' (' + linear.avgMs.toFixed(4) + ' ms avg)', 'info');
+      algoLog('Optimized BST checked ' + bst.result.comparisons + ' seats to find ' +
+        row + number + ' (' + bst.avgMs.toFixed(4) + ' ms avg)', 'ok');
+
+      const infoBox = document.getElementById('s5SeatInfo');
+      infoBox.style.display = 'flex';
+      if (foundSeat.status === 'available') {
+        infoBox.innerHTML =
+          '<div class="s5-seat-info-text">Seat <b>' + row + number + '</b> &middot; $' + Number(foundSeat.price).toFixed(2) + '</div>' +
+          '<button class="s5-book-btn" id="bookBtn">Book This Seat</button>';
+        document.getElementById('bookBtn').onclick = () => confirmBooking(foundSeat);
+      } else {
+        infoBox.innerHTML =
+          '<div class="s5-seat-info-text">Seat <b>' + row + number + '</b> &middot; $' + Number(foundSeat.price).toFixed(2) + ' &middot; already booked</div>';
+      }
+    }
+
+    function inspectSeat(seat) {
+      inspectByKey(seat.seat_row, seat.seat_number);
+    }
+
     function runSeatSearch() {
       const raw = (document.getElementById('seatSearchInput').value || '').trim().toUpperCase();
       const match = raw.match(/^([A-E])\s*(\d{1,2})$/);
       if (!match) {
         document.getElementById('s5SearchResult').textContent = 'Enter a seat like C7 (row A-E, seat 1-10).';
+        document.getElementById('s5SeatInfo').style.display = 'none';
         return;
       }
-      const row = match[1], number = parseInt(match[2], 10);
-      const key = seatKey(row, number);
-
-      const linear = linearSearchSeats(sectionSeats, key);
-      const bst    = sectionBST.search(key);
-
-      document.getElementById('s5SearchResult').textContent =
-        (linear.seat ? 'Seat ' + row + number + ' is ' + linear.seat.status : 'Seat ' + row + number + ' not found');
-      algoLog('Search ' + row + number + ' - Linear Search (baseline): ' + linear.comparisons + ' comparisons', 'info');
-      algoLog('Search ' + row + number + ' - Binary Search Tree (optimized): ' + bst.comparisons + ' comparisons', 'ok');
-
-      document.querySelectorAll('.seat-cell.highlight').forEach(c => c.classList.remove('highlight'));
-      if (linear.seat) {
-        const cell = document.getElementById('seat-' + linear.seat.id);
-        if (cell) cell.classList.add('highlight');
-      }
+      inspectByKey(match[1], parseInt(match[2], 10));
     }
 
-    async function bookSeat(seat) {
+    async function confirmBooking(seat) {
       if (seat.status !== 'available') return;
       // atomic conditional update: only succeeds if still available right now,
       // so two devices can never both book the same seat
@@ -861,12 +944,14 @@
       }
       if (!data || data.length === 0) {
         algoLog('Seat ' + seat.seat_row + seat.seat_number + ' was just taken, pick another.', 'info');
+        document.getElementById('s5SeatInfo').style.display = 'none';
         return;
       }
       selectedSeat = data[0];
       seat.status = 'booked';
       const cell = document.getElementById('seat-' + seat.id);
-      if (cell) { cell.className = 'seat-cell booked'; cell.onclick = null; }
+      if (cell) cell.className = 'seat-cell ' + sectionCssClass(seat.section) + ' booked';
+      document.getElementById('s5SeatInfo').style.display = 'none';
       updateCheckoutSidebarFromSeat(selectedSeat);
       goTo(4);
     }
