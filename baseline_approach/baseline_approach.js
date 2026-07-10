@@ -5,8 +5,12 @@ class BaselineQueue {
     return Date.now();
   }
 
-  enqueue(sessionId, userId, timestamp) {
-    this.#requests.push({ sessionId, userId, timestamp });
+  enqueue(sessionId, userId, timestamp, ticketNumber) {
+    this.#requests.push({ sessionId, userId, timestamp, ticketNumber });
+  }
+
+  hasTicketNumber(ticketNumber) {
+    return this.#requests.some((r) => r.ticketNumber === ticketNumber);
   }
 
   dequeue() {
@@ -26,8 +30,11 @@ class BaselineQueue {
     return removed;
   }
 
-  handleRefresh(sessionId, userId) {
-    this.enqueue(sessionId, userId, this.#now());
+  // Baseline never removes the old entry on reconnect: it just enqueues a
+  // fresh one with a brand-new random ticket number, exactly like the real
+  // Ticketmaster incident. The stale entry is left behind in the array.
+  handleRefresh(sessionId, userId, ticketNumber) {
+    this.enqueue(sessionId, userId, this.#now(), ticketNumber);
   }
 
   getPosition(sessionId) {
@@ -52,6 +59,23 @@ class BaselineQueue {
 
 const STORAGE_KEY = "baselineQueueState";
 
+// Random ticket/position assignment, collision-checked against existing
+// entries (an O(n) scan per generated number) - this is the baseline's
+// "random-number entry, not ordered entry" design from the problem statement.
+function generateUniqueTicketNumber(queue) {
+  let candidate;
+  do {
+    candidate = Math.floor(100000 + Math.random() * 900000);
+  } while (queue.hasTicketNumber(candidate));
+  return candidate;
+}
+
+function formatTicketNumber(ticketNumber) {
+  return typeof ticketNumber === "number"
+    ? ticketNumber.toLocaleString("en-US")
+    : ticketNumber;
+}
+
 function loadState() {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
@@ -71,11 +95,22 @@ function getQueue() {
   return state ? BaselineQueue.fromJSON(state.queue) : new BaselineQueue();
 }
 
-function persistQueue(queue, sessionId, userId, userJoinTime) {
+function persistQueue(
+  queue,
+  sessionId,
+  userId,
+  userJoinTime,
+  ticketNumber,
+  previousTicketNumber
+) {
+  const existing = loadState() || {};
   saveState({
+    ...existing,
     sessionId,
     userId,
     userJoinTime,
+    ticketNumber,
+    previousTicketNumber: previousTicketNumber ?? null,
     queue: queue.toJSON(),
   });
 }
@@ -87,7 +122,42 @@ function getSession() {
     sessionId: state.sessionId,
     userId: state.userId,
     userJoinTime: state.userJoinTime,
+    ticketNumber: state.ticketNumber,
+    previousTicketNumber: state.previousTicketNumber ?? null,
   };
+}
+
+// A real browser refresh (F5 / the address bar reload button) re-runs this
+// same script from scratch, with no way to tell it apart from a first
+// visit except what we track ourselves. Marking each page "visited" in
+// sessionStorage lets us treat every load after the first as a reconnect -
+// exactly what happened in the real incident, not just clicks on our own
+// in-page refresh link.
+function isPageReload(pageKey) {
+  const state = loadState();
+  if (!state) return false;
+  const visited = state.visitedPages || {};
+  const wasVisited = !!visited[pageKey];
+  saveState({ ...state, visitedPages: { ...visited, [pageKey]: true } });
+  return wasVisited;
+}
+
+// Baseline's reconnect behavior: throw away the old position, hand out a
+// brand-new random one. Used for both the in-page "Refresh" link and a
+// real browser reload landing back on the same page.
+function reassignPosition(session) {
+  const queue = getQueue();
+  const newTicketNumber = generateUniqueTicketNumber(queue);
+  queue.handleRefresh(session.sessionId, session.userId, newTicketNumber);
+  persistQueue(
+    queue,
+    session.sessionId,
+    session.userId,
+    session.userJoinTime,
+    newTicketNumber,
+    session.ticketNumber
+  );
+  return newTicketNumber;
 }
 
 function initEventDetail() {
@@ -100,24 +170,40 @@ function initEventDetail() {
     const userJoinTime = Date.now();
     const queue = new BaselineQueue();
 
-    queue.enqueue(sessionId, userId, userJoinTime);
+    const ticketNumber = generateUniqueTicketNumber(queue);
+    queue.enqueue(sessionId, userId, userJoinTime, ticketNumber);
 
     for (let i = 1; i <= 10; i++) {
-      queue.enqueue(`bot-sess-${i}`, `bot-user-${i}`, userJoinTime + i * 100);
+      const botTicketNumber = generateUniqueTicketNumber(queue);
+      queue.enqueue(
+        `bot-sess-${i}`,
+        `bot-user-${i}`,
+        userJoinTime + i * 100,
+        botTicketNumber
+      );
     }
 
-    persistQueue(queue, sessionId, userId, userJoinTime);
+    persistQueue(queue, sessionId, userId, userJoinTime, ticketNumber);
     window.location.href = "waiting-room.html";
   });
 }
 
 function initWaitingRoom() {
-  const session = getSession();
+  let session = getSession();
   const queueNumber = document.querySelector(".queue-number");
   const refreshBtn = document.getElementById("queue-refresh-btn");
 
-  if (session && queueNumber) {
-    queueNumber.textContent = "1";
+  if (session) {
+    // First arrival shows the number assigned on join. Any later load of
+    // this page - clicking browser refresh included - is a reconnect, so
+    // it gets re-randomized just like the in-page refresh link does.
+    if (isPageReload("waiting-room")) {
+      reassignPosition(session);
+      session = getSession();
+    }
+    if (queueNumber) {
+      queueNumber.textContent = formatTicketNumber(session.ticketNumber);
+    }
   }
 
   if (!refreshBtn) return;
@@ -125,16 +211,9 @@ function initWaitingRoom() {
   refreshBtn.addEventListener("click", (event) => {
     event.preventDefault();
 
-    const session = getSession();
-    if (session) {
-      const queue = getQueue();
-      queue.handleRefresh(session.sessionId, session.userId);
-      persistQueue(
-        queue,
-        session.sessionId,
-        session.userId,
-        session.userJoinTime
-      );
+    const current = getSession();
+    if (current) {
+      reassignPosition(current);
     }
 
     window.location.href = "queue-interruption.html";
@@ -142,6 +221,27 @@ function initWaitingRoom() {
 }
 
 function initQueueInterruption() {
+  let session = getSession();
+  const numberEl = document.getElementById("queue-position-number");
+  const previousEl = document.getElementById("queue-position-previous");
+
+  // Same story here: a real browser refresh on this page is another
+  // reconnect, so it costs you your position again, compounding the flaw.
+  if (session && isPageReload("queue-interruption")) {
+    reassignPosition(session);
+    session = getSession();
+  }
+
+  if (session && numberEl) {
+    numberEl.textContent = "#" + formatTicketNumber(session.ticketNumber);
+  }
+  if (session && previousEl && session.previousTicketNumber != null) {
+    previousEl.textContent =
+      "Before the refresh, your number was #" +
+      formatTicketNumber(session.previousTicketNumber) +
+      ".";
+  }
+
   const refreshBtn = document.getElementById("interruption-refresh-btn");
   const timerElement = document.getElementById("timer");
   let countdown = 5;
