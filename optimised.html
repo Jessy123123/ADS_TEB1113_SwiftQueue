@@ -203,6 +203,36 @@
       .btn-checkout:hover { opacity: 0.88; }
       .timer-row { display: flex; align-items: center; justify-content: center; gap: 6px; color: #9CA3AF; font-size: 14px; }
 
+      /* SCREEN 5 */
+      #screen5 { display: none; }
+      #screen5.active { display: flex; flex-direction: column; }
+      #screen5 .seat-body { display: flex; height: calc(900px - 64px); }
+      .s5-grid-panel {
+        flex: 1; display: flex; flex-direction: column; align-items: center;
+        gap: 20px; padding: 28px 48px; background: #F8F9FA; overflow-y: auto;
+      }
+      .s5-back { background: none; border: 1px solid #E5E7EB; border-radius: 8px; padding: 8px 16px;
+        font-size: 14px; color: #1A1A1A; cursor: pointer; align-self: flex-start; font-family: Inter, system-ui, sans-serif; }
+      .s5-search-row { display: flex; gap: 8px; width: 100%; max-width: 440px; }
+      .s5-search-row input { flex: 1; border: 1px solid #E5E7EB; border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: Inter, system-ui, sans-serif; }
+      .s5-search-row button { border: none; background: #0067F4; color: #fff; border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Inter, system-ui, sans-serif; }
+      .s5-search-result { font-size: 13px; font-family: 'Courier New', monospace; color: #1A1A1A; min-height: 40px; white-space: pre-line; }
+      .seat-grid { display: flex; flex-direction: column; gap: 8px; }
+      .seat-grid-row { display: flex; align-items: center; gap: 8px; }
+      .seat-row-label { width: 20px; color: #6B7280; font-size: 13px; font-weight: 600; }
+      .seat-cell {
+        width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+        font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: transform 0.1s;
+      }
+      .seat-cell.available { background: #DCFCE7; color: #16A34A; }
+      .seat-cell.available:hover { transform: scale(1.1); border-color: #16A34A; }
+      .seat-cell.booked { background: #E5E7EB; color: #9CA3AF; cursor: not-allowed; }
+      .seat-cell.highlight { outline: 3px solid #0067F4; }
+      .s5-sidebar {
+        width: 380px; flex-shrink: 0; border-left: 1px solid #E5E7EB;
+        display: flex; flex-direction: column; gap: 12px; padding: 24px 28px; overflow-y: auto;
+      }
+
       #toast {
         display: none; position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
         background: #16A34A; color: #FFFFFF; border-radius: 8px;
@@ -325,16 +355,16 @@
       <div class="map-panel">
         <div class="map-title">Select Your Seats</div>
         <div class="stadium">
-          <div class="seat-section vip" onclick="selectSection(this,'VIP Floor','$450+',450)">VIP FLOOR</div>
-          <div class="seat-section a-l" onclick="selectSection(this,'Section A Left','$250',250)">A LEFT</div>
-          <div class="seat-section a-c" onclick="selectSection(this,'Section A Center','$250',250)">A CENTER</div>
-          <div class="seat-section a-r" onclick="selectSection(this,'Section A Right','$250',250)">A RIGHT</div>
-          <div class="seat-section b-l" onclick="selectSection(this,'Section B Left','$150',150)">B LEFT</div>
-          <div class="seat-section b-c" onclick="selectSection(this,'Section B Center','$150',150)">B CENTER</div>
-          <div class="seat-section b-r" onclick="selectSection(this,'Section B Right','$150',150)">B RIGHT</div>
-          <div class="seat-section c-l" onclick="selectSection(this,'Section C Left','$85',85)">C LEFT</div>
-          <div class="seat-section c-c" onclick="selectSection(this,'Section C Center','$85',85)">C CENTER</div>
-          <div class="seat-section c-r" onclick="selectSection(this,'Section C Right','$85',85)">C RIGHT</div>
+          <div class="seat-section vip" onclick="openSeatGrid('VIP','VIP Floor')">VIP FLOOR</div>
+          <div class="seat-section a-l" onclick="openSeatGrid('A','Section A')">A LEFT</div>
+          <div class="seat-section a-c" onclick="openSeatGrid('A','Section A')">A CENTER</div>
+          <div class="seat-section a-r" onclick="openSeatGrid('A','Section A')">A RIGHT</div>
+          <div class="seat-section b-l" onclick="openSeatGrid('B','Section B')">B LEFT</div>
+          <div class="seat-section b-c" onclick="openSeatGrid('B','Section B')">B CENTER</div>
+          <div class="seat-section b-r" onclick="openSeatGrid('B','Section B')">B RIGHT</div>
+          <div class="seat-section c-l" onclick="openSeatGrid('C','Section C')">C LEFT</div>
+          <div class="seat-section c-c" onclick="openSeatGrid('C','Section C')">C CENTER</div>
+          <div class="seat-section c-r" onclick="openSeatGrid('C','Section C')">C RIGHT</div>
           <div class="seat-section stage">STAGE</div>
         </div>
         <div class="legend">
@@ -355,13 +385,13 @@
         <div class="divider"></div>
         <div>
           <div class="selection-title">Your Selection</div>
-          <div class="selection-empty" id="selectionInfo" style="margin-top:6px;">Click a section on the map to view available seats</div>
+          <div class="selection-empty" id="selectionInfo" style="margin-top:6px;">Click a section on the map to choose a seat</div>
         </div>
         <div class="divider"></div>
         <div>
           <div class="price-summary-title">Price Summary</div>
           <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
-            <div class="price-row-item"><span>Tickets (2x)</span><span id="ticketPrice"></span></div>
+            <div class="price-row-item"><span id="ticketLabel">Ticket (1x)</span><span id="ticketPrice"></span></div>
             <div class="price-row-item"><span>Service Fee</span><span id="serviceFee"></span></div>
             <div class="price-row-item"><span>Facility Fee</span><span>$12.00</span></div>
             <div class="divider"></div>
@@ -371,6 +401,33 @@
         <div class="spacer"></div>
         <button class="btn-checkout" onclick="checkout()">Proceed to Checkout</button>
         <div class="timer-row">Time remaining: <span id="timer">4:32</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: CINEMA-STYLE SEAT GRID -->
+  <div id="screen5" class="screen">
+    <div class="seat-top-bar">
+      <div class="logo">ticketmaster</div>
+      <div style="color:#6B7280;font-size:15px;" id="s5SectionTitle">Section</div>
+    </div>
+    <div class="seat-body">
+      <div class="s5-grid-panel">
+        <button class="s5-back" onclick="goTo(4)">Back to sections</button>
+        <div class="s5-search-row">
+          <input id="seatSearchInput" placeholder="Find seat, e.g. C7" />
+          <button onclick="runSeatSearch()">Search</button>
+        </div>
+        <div class="s5-search-result" id="s5SearchResult"></div>
+        <div class="seat-grid" id="seatGrid"></div>
+      </div>
+      <div class="s5-sidebar">
+        <div class="sidebar-event-title">Choose a seat</div>
+        <div class="sidebar-event-date" id="s5AvailCount">Loading seats...</div>
+        <div class="divider"></div>
+        <div class="selection-title">Linear Search vs Binary Search Tree</div>
+        <div class="selection-empty" style="margin-top:-6px;">Type a seat above and press Search to compare both algorithms on this section's seats.</div>
+        <div class="sim-log" id="s5AlgoLog" style="height:260px;"></div>
       </div>
     </div>
   </div>
@@ -619,23 +676,211 @@
       }, 1000);
     }
 
-    function selectSection(el, name, priceEach, unitPrice) {
-      // using loop to remove the one already selected
-      const sections = document.querySelectorAll('.seat-section');
-      for (let i = 0; i < sections.length; i++) {
-        const s = sections[i];
-        s.classList.remove('selected');
-      }
-      el.classList.add('selected');
-      // just for some displays
+    // ---- Problem 2: seat search, Baseline (unsorted array + linear search)
+    // vs Optimized (Binary Search Tree) ----
 
-      const tickets  = unitPrice * 2;
+    // seatKey gives every seat a single sortable number so the BST can order
+    // by row then seat number, e.g. row 'C' seat 7 -> 307
+    function seatKey(row, number) {
+      return row.charCodeAt(0) * 100 + number;
+    }
+
+    class BSTNode {
+      constructor(key, seat) {
+        this.key   = key;
+        this.seat  = seat;
+        this.left  = null;
+        this.right = null;
+      }
+    }
+
+    class SeatBST {
+      constructor() { this.root = null; }
+      // O(log n) average - O(n) worst case if inserted in sorted order
+      insert(key, seat) {
+        const node = new BSTNode(key, seat);
+        if (this.root === null) { this.root = node; return; }
+        let current = this.root;
+        while (true) {
+          if (key < current.key) {
+            if (current.left === null) { current.left = node; return; }
+            current = current.left;
+          } else {
+            if (current.right === null) { current.right = node; return; }
+            current = current.right;
+          }
+        }
+      }
+      // O(log n) average - go left/right based on comparison, halving the
+      // remaining nodes to check at every step
+      search(key) {
+        let comparisons = 0;
+        let current = this.root;
+        while (current !== null) {
+          comparisons++;
+          if (key === current.key) return { seat: current.seat, comparisons };
+          current = key < current.key ? current.left : current.right;
+        }
+        return { seat: null, comparisons };
+      }
+    }
+
+    // O(n) - baseline: check every seat one by one until a match is found
+    function linearSearchSeats(seatArray, key) {
+      let comparisons = 0;
+      for (const seat of seatArray) {
+        comparisons++;
+        if (seat._key === key) return { seat, comparisons };
+      }
+      return { seat: null, comparisons };
+    }
+
+    let currentSection  = null;
+    let sectionSeats    = [];   // baseline: plain unsorted array
+    let sectionBST      = null; // optimized: Binary Search Tree
+    let selectedSeat    = null;
+    let seatsChannel    = null;
+
+    async function openSeatGrid(section, label) {
+      currentSection = section;
+      document.getElementById('s5SectionTitle').textContent = label + ' Seat Selection';
+      document.getElementById('seatGrid').innerHTML = '<div class="s5-search-result">Loading seats...</div>';
+      document.getElementById('s5AlgoLog').innerHTML = '';
+      document.getElementById('s5SearchResult').textContent = '';
+      goTo(5);
+
+      const { data, error } = await sb.from('seats').select('*').eq('section', section)
+        .order('seat_row', { ascending: true }).order('seat_number', { ascending: true });
+      if (error) {
+        document.getElementById('seatGrid').innerHTML = '<div class="s5-search-result">Could not load seats: ' + error.message + '</div>';
+        return;
+      }
+
+      // baseline structure: seats kept in a plain array, in whatever order they arrived
+      sectionSeats = data.map(s => ({ ...s, _key: seatKey(s.seat_row, s.seat_number) }));
+      // optimized structure: same seats, organized into a Binary Search Tree by key
+      sectionBST = new SeatBST();
+      sectionSeats.forEach(s => sectionBST.insert(s._key, s));
+
+      renderSeatGrid();
+      subscribeSeatRealtime(section);
+    }
+
+    function renderSeatGrid() {
+      const rows = {};
+      sectionSeats.forEach(s => {
+        if (!rows[s.seat_row]) rows[s.seat_row] = [];
+        rows[s.seat_row].push(s);
+      });
+      const grid = document.getElementById('seatGrid');
+      grid.innerHTML = '';
+      Object.keys(rows).sort().forEach(rowLetter => {
+        const rowEl = document.createElement('div');
+        rowEl.className = 'seat-grid-row';
+        const label = document.createElement('div');
+        label.className = 'seat-row-label';
+        label.textContent = rowLetter;
+        rowEl.appendChild(label);
+        rows[rowLetter].sort((a, b) => a.seat_number - b.seat_number).forEach(seat => {
+          const cell = document.createElement('div');
+          cell.className = 'seat-cell ' + seat.status;
+          cell.id = 'seat-' + seat.id;
+          cell.textContent = seat.seat_number;
+          cell.title = seat.seat_row + seat.seat_number + ' - $' + seat.price;
+          if (seat.status === 'available') cell.onclick = () => bookSeat(seat);
+          rowEl.appendChild(cell);
+        });
+        grid.appendChild(rowEl);
+      });
+      const available = sectionSeats.filter(s => s.status === 'available').length;
+      document.getElementById('s5AvailCount').textContent = available + ' of ' + sectionSeats.length + ' seats available';
+    }
+
+    function subscribeSeatRealtime(section) {
+      if (seatsChannel) sb.removeChannel(seatsChannel);
+      seatsChannel = sb.channel('seats_changes_' + section)
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'seats' }, (payload) => {
+          const updated = payload.new;
+          if (updated.section !== currentSection) return;
+          const local = sectionSeats.find(s => s.id === updated.id);
+          if (local) local.status = updated.status;
+          const cell = document.getElementById('seat-' + updated.id);
+          if (cell) {
+            cell.className = 'seat-cell ' + updated.status;
+            cell.onclick = updated.status === 'available' ? () => bookSeat(local) : null;
+          }
+          const available = sectionSeats.filter(s => s.status === 'available').length;
+          document.getElementById('s5AvailCount').textContent = available + ' of ' + sectionSeats.length + ' seats available';
+        })
+        .subscribe();
+    }
+
+    function algoLog(msg, type) {
+      const el = document.createElement('div');
+      el.className = 'log-entry ' + (type || 'join');
+      el.textContent = msg;
+      const box = document.getElementById('s5AlgoLog');
+      box.appendChild(el);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function runSeatSearch() {
+      const raw = (document.getElementById('seatSearchInput').value || '').trim().toUpperCase();
+      const match = raw.match(/^([A-E])\s*(\d{1,2})$/);
+      if (!match) {
+        document.getElementById('s5SearchResult').textContent = 'Enter a seat like C7 (row A-E, seat 1-10).';
+        return;
+      }
+      const row = match[1], number = parseInt(match[2], 10);
+      const key = seatKey(row, number);
+
+      const linear = linearSearchSeats(sectionSeats, key);
+      const bst    = sectionBST.search(key);
+
+      document.getElementById('s5SearchResult').textContent =
+        (linear.seat ? 'Seat ' + row + number + ' is ' + linear.seat.status : 'Seat ' + row + number + ' not found');
+      algoLog('Search ' + row + number + ' - Linear Search (baseline): ' + linear.comparisons + ' comparisons', 'info');
+      algoLog('Search ' + row + number + ' - Binary Search Tree (optimized): ' + bst.comparisons + ' comparisons', 'ok');
+
+      document.querySelectorAll('.seat-cell.highlight').forEach(c => c.classList.remove('highlight'));
+      if (linear.seat) {
+        const cell = document.getElementById('seat-' + linear.seat.id);
+        if (cell) cell.classList.add('highlight');
+      }
+    }
+
+    async function bookSeat(seat) {
+      if (seat.status !== 'available') return;
+      // atomic conditional update: only succeeds if still available right now,
+      // so two devices can never both book the same seat
+      const { data, error } = await sb.from('seats').update({ status: 'booked' })
+        .eq('id', seat.id).eq('status', 'available').select();
+      if (error) {
+        algoLog('Booking error: ' + error.message, 'info');
+        return;
+      }
+      if (!data || data.length === 0) {
+        algoLog('Seat ' + seat.seat_row + seat.seat_number + ' was just taken, pick another.', 'info');
+        return;
+      }
+      selectedSeat = data[0];
+      seat.status = 'booked';
+      const cell = document.getElementById('seat-' + seat.id);
+      if (cell) { cell.className = 'seat-cell booked'; cell.onclick = null; }
+      updateCheckoutSidebarFromSeat(selectedSeat);
+      goTo(4);
+    }
+
+    function updateCheckoutSidebarFromSeat(seat) {
+      const ticket   = Number(seat.price);
       const service  = 45.00;
       const facility = 12.00;
-      document.getElementById('selectionInfo').textContent = name + priceEach + ' per ticket';
-      document.getElementById('ticketPrice').textContent   = '$' + tickets.toFixed(2);
-      document.getElementById('serviceFee').textContent    = '$' + service.toFixed(2);
-      document.getElementById('totalPrice').textContent    = '$' + (tickets + service + facility).toFixed(2);
+      document.getElementById('selectionInfo').textContent =
+        'Section ' + seat.section + ', Seat ' + seat.seat_row + seat.seat_number + ' - $' + ticket.toFixed(2);
+      document.getElementById('ticketLabel').textContent = 'Seat ' + seat.seat_row + seat.seat_number;
+      document.getElementById('ticketPrice').textContent = '$' + ticket.toFixed(2);
+      document.getElementById('serviceFee').textContent  = '$' + service.toFixed(2);
+      document.getElementById('totalPrice').textContent  = '$' + (ticket + service + facility).toFixed(2);
     }
 
     function checkout() {
